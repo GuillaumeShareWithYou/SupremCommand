@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SupremCommand:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SupremCommand_jar</output-path>
+    <root id="archive" name="SupremCommand.jar">
+      <element id="module-output" name="SupremCommand" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-java-5.1.44.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
