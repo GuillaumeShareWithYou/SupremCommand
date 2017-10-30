@@ -31,7 +31,9 @@ public class Gtk_command extends Command{
 
         if (this.getOptions().contains("prim"))
             return isPrime(calcul);
-/*
+
+        return calcul+" = "+evaluate(calcul);
+        /*
         Pattern pattern = Pattern.compile("[\\+\\-\\*\\^\\/]");
         Matcher matcher = pattern.matcher(command);
         matcher.find();
@@ -64,13 +66,6 @@ public class Gtk_command extends Command{
 
         }
         */
-
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("js");
-            Object result = engine.eval(calcul);
-            return calcul+" = "+result.toString();
-
-
     }
 
     public String isPrime(String calcul) {

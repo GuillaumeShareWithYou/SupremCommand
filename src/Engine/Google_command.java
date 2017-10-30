@@ -10,7 +10,6 @@ public class Google_command extends WebOriented_command {
         String search = null;
         try{
             search = this.getArg(0);
-           this.setArg(0,getUrl()+search);
             new Net_command(getApp(),this.toString());
 
         }catch(Exception e){
