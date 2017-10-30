@@ -5,13 +5,29 @@ public class Set_command extends Command{
         super(app, command);
         if(stopCommand) return;
 
-        if(this.getArg(0)!=null)
+        if(this.getOptions().contains("default") || this.getOptions().contains("reset"))
         {
-            if(this.getArg(0).equals("symbole"))
+            app.getConfig().setDefault();
+            sendMessage("configs are now by default");
+            return;
+        }
+
+        if(this.getArg(0)!=null && this.getArg(1)!=null)
+        {
+            String variableToSet = this.getArg(0);
+            if(variableToSet.equals("symbole"))
             {
                 app.getContext().setSymbole(this.getArg(1));
-                sendMessage("As you like.");
+                sendMessage("Symbole changed.");
+            }else if(variableToSet.equals("browser"))
+            {
+                app.getConfig().setBrowser(this.getArg(1));
+                sendMessage("Browser changed.");
+            }else{
+                sendMessage("this variable can't be set. check it with set --arg ");
             }
+        }else{
+            sendMessage("Missing variable or argument.");
         }
     }
 }

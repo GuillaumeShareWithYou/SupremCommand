@@ -1,7 +1,10 @@
 package test;
 
-import Engine.Context;
 
+import Engine.Gtk_command;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +13,8 @@ import java.util.regex.Pattern;
 
 public class Test {
 
-    public Test()
-    {
-        System.out.println("sout pas sysout");
-    }
+
     public static void main(String[] args) throws Exception{
 
-        Context.SLEEP.setSymbole("Mpo");
-
-        System.out.println(Context.SLEEP.getSymbole());
     }
 }

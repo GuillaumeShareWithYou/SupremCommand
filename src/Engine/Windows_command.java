@@ -9,10 +9,11 @@ public class Windows_command extends Command {
         super(app, command);
 
         try {
+            command = command.substring(1); //retire the ! witch is the condition to open a windows command
             String[]cmds = command.split("&&");
             File temp = new File("bat/temp.bat");
             PrintWriter pw = new PrintWriter(temp);
-            pw.println("@echo off");
+          //  pw.println("@echo off");
             for(String s : cmds)
                 pw.println(s);
             pw.close();

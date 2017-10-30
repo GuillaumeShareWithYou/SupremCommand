@@ -47,15 +47,18 @@ public class DatabaseService {
         }
 
     }
-    public static boolean isExistingCommand(String commandName) {
+    public static boolean isExistingCommand(String commandName) throws UnexistingCommandException {
         Connection db = Database.getInstance();
         try {
             PreparedStatement st = db.prepareStatement("select command_name from command where command_name = ?");
             st.setString(1,commandName);
             ResultSet res = st.executeQuery();
 
-            return res.next();
+           boolean found = res.next();
+           if(!found)
+               throw new UnexistingCommandException("this command is not supported yet.");
 
+           return found;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -63,11 +66,11 @@ public class DatabaseService {
 
     }
 
-    public static String getCommandOption(String commandName) {
+    public static String printCommandOption(String commandName) {
         Connection db = Database.getInstance();
         try {
-            PreparedStatement st = db.prepareStatement("select command_name, option_name, option_description from command natural join command_option where command_name = ? and option_description IS NOT NULL" +
-                    "order by option_name");
+            PreparedStatement st = db.prepareStatement("select command_name, option_name, option_description from command natural join command_option where command_name = ? and option_description IS NOT NULL " +
+                    " order by option_name");
             st.setString(1, commandName);
             ResultSet res = st.executeQuery();
             res.next();
@@ -79,10 +82,10 @@ public class DatabaseService {
                 strb.append("-"+res.getString("option_name").toUpperCase() + " ->");
                 strb.append(res.getString("option_description") + "\n");
             }
-            return strb.toString();
+             return strb.toString().substring(0,strb.length()-1);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "options not found for command "+commandName;
+            return "no options for the command "+commandName;
         }
     }
 
@@ -113,7 +116,7 @@ public class DatabaseService {
             PreparedStatement st = db.prepareStatement(
                     "select command_id from command NATURAL join context_command natural join context" +
                             " where command_name=? " +
-                    "and context_id <= (select context_id from context where context_name=?)");
+                    " and context_id <= (select context_id from context where context_name=?)");
             st.setString(1,commandName);
             st.setString(2,context.getName());
             ResultSet res = st.executeQuery();
@@ -129,7 +132,7 @@ public class DatabaseService {
         Connection db = Database.getInstance();
         try {
             PreparedStatement st = db.prepareStatement("select command_name, argument_name, argument_description from command natural join argument where command_name = ? and argument_description IS NOT NULL " +
-                    "order by argument_name");
+                    " order by argument_name");
             st.setString(1, commandName);
             ResultSet res = st.executeQuery();
             res.next();
@@ -141,10 +144,11 @@ public class DatabaseService {
                 strb.append(res.getString("argument_name").toUpperCase() + " ->");
                 strb.append(res.getString("argument_description") + "\n");
             }
-            return strb.toString();
+
+            return strb.toString().substring(0,strb.length()-1);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "arguments not found for command "+commandName;
+            return "no arguments for the command "+commandName;
         }
     }
 }

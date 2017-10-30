@@ -21,7 +21,8 @@ public class Play_command extends Command {
             this.sendMessage("game started correctly");
         }catch(IOException e)
         {
-            this.sendMessage("This game doesn't exist. type /help play -o to see the games");
+            this.sendMessage("This game doesn't exist");
+            suggestHelp();
         }
     }
 

@@ -1,5 +1,8 @@
 package Engine;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,21 +14,24 @@ public class Gtk_command extends Command{
         super(app,command);
         if(stopCommand) return;
         try{
-            this.sendMessage(calcul(command));
+
+            this.sendMessage(calcul(this.argsToString()));
+        }catch (NumberFormatException e)
+        {
+            sendMessage(this.argsToString()+" is not an integer, so not a prime number.");
         }catch (Exception e)
         {
-           app.setMessage("Use gtk -h if you need");
+           app.setMessage("We can't do the maths. Use gtk -h if you need help for syntax");
         }
 
     }
 
-    public String calcul(String command) {
+    public String calcul(String calcul) throws ScriptException {
 
-        command = command.substring(3); // retire "gtk" devant la commande
-        command = command.replaceFirst(" ","");
+
         if (this.getOptions().contains("prim"))
-            return isPrime(command);
-
+            return isPrime(calcul);
+/*
         Pattern pattern = Pattern.compile("[\\+\\-\\*\\^\\/]");
         Matcher matcher = pattern.matcher(command);
         matcher.find();
@@ -55,21 +61,29 @@ public class Gtk_command extends Command{
             default:
                 return "Operation not available";
 
+
         }
+        */
+
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("js");
+            Object result = engine.eval(calcul);
+            return calcul+" = "+result.toString();
+
+
     }
 
-    public String isPrime(String command) {
+    public String isPrime(String calcul) {
 
-            Pattern pattern = Pattern.compile("[0-9]+");
-            Matcher matcher = pattern.matcher(command);
-            matcher.find();
-            int number = Integer.parseInt(matcher.group());
-            System.out.println(number);
+            int number = evaluate(calcul).intValue();
+
             if (isPrime(number)) {
-                return (number + " is prime");
+                return (calcul +" ( "+ number +" ) is prime");
             } else {
-                return (number + " is not prime");
+                return (calcul +" ( "+ number +" ) is not prime");
             }
+
+
     }
 
     private boolean isPrime(int number) {
@@ -83,5 +97,20 @@ public class Gtk_command extends Command{
             }
         }
         return isPrime;
+    }
+    public static Double evaluate(String calcul)
+    {
+        try{
+
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("js");
+            Object result = engine.eval(calcul);
+            return Double.parseDouble(result.toString());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }

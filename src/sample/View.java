@@ -26,7 +26,7 @@ public class View extends Application {
         input =  (TextField) root.getScene().lookup("#input");
 
 
-        prompt.appendText("\n\n\t\t\t\t\tE-corp Command Line\n\n".toUpperCase());
+
 
         App app = new App();
         new Controller(this,app);

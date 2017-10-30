@@ -11,9 +11,16 @@ public class Ecp_command extends Command {
             started = init();
         }else{
 
-            if(this.getArg(0)!=null && this.getArg(0).equals("upgrade"))
+            if(this.getArg(0)!=null && this.getArg(0).equals("upgrade") || this.getArg(0).equals("up"))
             {
-                app.setContext(Context.MANAGER);
+                if(app.getContext().compareTo(Context.MANAGER)<0)
+                {
+                    app.setContext(Context.MANAGER);
+                }else{
+                    sendMessage("You are not a standard person for quite a while");
+                }
+            }else{
+                    suggestHelp();
             }
 
         }

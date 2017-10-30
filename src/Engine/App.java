@@ -12,12 +12,13 @@ import java.util.regex.Pattern;
 public class App extends Observable {
     private String message;
     private Context context;
-
+    private Config config;
     public App() {
         initApp();
     }
 
     public void initApp() {
+        config = new Config();
         context = Context.SLEEP;
     }
 
@@ -65,11 +66,12 @@ public class App extends Observable {
         try {
 
             commandName = Command.indicateCommandName(command);
-            System.out.println(commandName);
+
             boolean exists = DatabaseService.isExistingCommand(commandName);
 
-            if(exists || (getContext().compareTo(Context.STANDARD)<0))
-            if (!DatabaseService.isPermitted(commandName,getContext())) {
+
+
+            if (exists && !DatabaseService.isPermitted(commandName,getContext())) {
                 throw new ForbiddenCommandException("You can't use this command now");
             }
             Class classe = Class.forName("Engine." + commandName + "_command");
@@ -79,8 +81,25 @@ public class App extends Observable {
         } catch (ForbiddenCommandException e) {
             this.setMessage("You can't use the command "+commandName+" at the moment.");
 
-        } catch (Exception e) {
-            new Windows_command(this, command);
+        }catch (UnexistingCommandException e)
+        {
+            this.setMessage("This cmd doesn't exists,type !["+commandName+"] to open in windows cmd.");
+        }catch (OnlyCommentException e)
+        {
+            command = command.substring(2);
+            this.setMessage("####----"+command+"----####");
+        }
+        catch (ChangeTerminalException e) {
+            if(getContext().compareTo(Context.STANDARD)>=0)
+            {
+                new Windows_command(this, command);
+            }else{
+                setMessage("You need to init the app first!");
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            setMessage("error in the command. We are searching why...");
         }
 
     }
@@ -108,6 +127,7 @@ public class App extends Observable {
                 break;
             case STANDARD:
                 printWelcomeMsg();
+                setMessage("App is now ready");
                 break;
             case MANAGER:
                 setMessage("Welcome back Guillaume, we missed you !");
@@ -123,4 +143,9 @@ public class App extends Observable {
     public void printWelcomeMsg() {
         new Fread_command(this, "fread files/welcome.txt");
     }
+
+    public Config getConfig() {
+        return config;
+    }
+
 }
