@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mouseTransparent="false" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <BorderPane id="struct" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <TextField id="input" prefHeight="40.0" prefWidth="600.0" style="-fx-border-radius: 0 0 0 0;-fx-font-size:18;-fx-background-radius: 0 0 0 0;-fx-background-color: black;-fx-text-fill:white ;" text="" />
+      </bottom>
+      <center>
+        <TextArea id="prompt" prefHeight="360.0" prefWidth="600.0" style="-fx-background-color: black;-fx-border-radius: 0 0 0 0;-fx-background-radius: 0 0 0 0;-fx-text-fill: #83ffc3;" wrapText="true" />
+      </center>
+    </BorderPane>
+  </children>
+</AnchorPane>

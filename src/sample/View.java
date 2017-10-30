@@ -17,9 +17,9 @@ public class View extends Application {
     private TextField input;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("view.fxml"));
         root.getStylesheets().add("sample/css/style.css");
-        primaryStage.setTitle("E-Corp");
+        primaryStage.setTitle("HACKED COMMAND");
         primaryStage.setScene(new Scene(root,950,490));
 
         prompt = (TextArea) root.getScene().lookup("#prompt");
@@ -34,8 +34,6 @@ public class View extends Application {
 
         primaryStage.show();
         primaryStage.setMinWidth(300);
-        primaryStage.setMaxWidth(1000);
-        prompt.setPadding(new Insets(0,0,5,20));
 
     }
 

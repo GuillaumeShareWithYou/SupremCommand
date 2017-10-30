@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class App extends Observable {
-    private String message;
+    private Message message;
     private Context context;
     private Config config;
     public App() {
@@ -28,9 +28,8 @@ public class App extends Observable {
 
     public void mapToContext(String command) {
 
-        //for now
 
-        if (command.equals("go")) {
+        if (command.equals("go")) { //for now
            this.setContext(Context.STANDARD);
            Ecp_command.setStarted(true);
         }else if (this.getContext() == Context.CONFIRM) {
@@ -105,7 +104,12 @@ public class App extends Observable {
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.message = new Message(message);
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void setMessage(String message, boolean isFromSystem) {
+        this.message = new Message(message,isFromSystem);
         this.setChanged();
         this.notifyObservers();
     }
@@ -135,7 +139,7 @@ public class App extends Observable {
         }
     }
 
-    public String getMessage() {
+    public Message getMessage() {
         return message;
     }
 

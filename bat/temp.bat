@@ -1,3 +1,3 @@
 git add * 
- git commit -m "ajout de !git " 
+ git commit -m "change display and seemsok command " 
  git push origin master

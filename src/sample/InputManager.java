@@ -4,6 +4,9 @@ import Engine.App;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class InputManager {
     private TextField input;
@@ -17,7 +20,7 @@ public class InputManager {
             if(e.getCode()== KeyCode.ENTER)
             {
                 String command = input.getText();
-                if(command.isEmpty()) return;
+                if(!seemsOk(command)) return;
                 app.work(command);
                 pileMessage.add(command);
                 input.setText("");
@@ -32,5 +35,10 @@ public class InputManager {
                 // on verra
             }
         });
+    }
+    public boolean seemsOk(String command){
+        Pattern pattern = Pattern.compile("^[^\\s *0-9].*$");
+        Matcher matcher = pattern.matcher(command);
+        return matcher.find();
     }
 }

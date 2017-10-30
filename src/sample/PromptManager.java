@@ -3,11 +3,13 @@ package sample;
 
 import Engine.App;
 import Engine.Context;
+import Engine.Message;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.Observer;
 
@@ -22,7 +24,7 @@ public class PromptManager implements Observer {
         this.app = app;
         app.addObserver(this);
         prompt.setEditable(false);
-        prompt.setFont(Font.font("Monospaced", 16));
+        prompt.setFont(Font.font("Monospaced", 17));
         prompt.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
             prompt.setScrollTop(Double.MAX_VALUE);
 
@@ -32,14 +34,14 @@ public class PromptManager implements Observer {
     }
 
     private void welcome() {
-        prompt.appendText("\n\n\t\t\t\t\tE-corp Command Line\n\n".toUpperCase());
-        prompt.appendText("\nStart the app by typing:\t\"ecp app --init\"");
-        prompt.appendText("\nDisplay all the available commands with:\t\"show cmd\"\n");
+
+        prompt.appendText("\n\n\t\t\tHacked Command Line".toUpperCase()+" \t\t\t\t(c) Guillaume\n\n");
+        prompt.appendText("One command to rule them all : \t\"/show cmd\"\n");
     }
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        String response = app.getMessage() + "\n";
+        Message response = app.getMessage();
         Platform.runLater(() -> {
             if (optionThreadActive) {
                 new Writer(response, prompt, app.getContext()).start();
@@ -51,8 +53,11 @@ public class PromptManager implements Observer {
 
     }
 
-    void write(String message, Context context) {
-        prompt.appendText(context.getSymbole() + ":~$> ");
-        prompt.appendText(message);
+    void write(Message message, Context context) {
+     if(!message.isFromSystem())
+     {
+         prompt.appendText(context.getSymbole() + ":~$> ");
+     }
+        prompt.appendText(message.getContent()+"\n");
     }
 }
