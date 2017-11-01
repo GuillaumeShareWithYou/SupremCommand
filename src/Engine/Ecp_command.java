@@ -37,6 +37,10 @@ public class Ecp_command extends Command {
              if (this.getOptions().contains("init")) {
                  if (this.getOptions().contains("dev")) {
                      app.setContext(Context.STANDARD);
+                     if(!this.getOptions().contains("discreet"))
+                     {
+                         printWelcomeMsg();
+                     }
                  } else {
                      app.setContext(Context.INIT);
 
@@ -53,7 +57,9 @@ public class Ecp_command extends Command {
          return false;
      }
     }
-
+    public void printWelcomeMsg() {
+        new Fread_command(getApp(), "fread files/welcome.txt");
+    }
     public static boolean isStarted() {
         return started;
     }

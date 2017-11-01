@@ -7,7 +7,6 @@ public class Intellij_command extends Command {
     try {
         ProcessBuilder ps = new ProcessBuilder("C:\\Users\\HB1\\Intellij\\bin\\idea64.exe");
         Process pr = ps.start();
-        pr.waitFor();
      }catch (Exception e){sendMessage("Impossible to open Intellij");}
     }
 }

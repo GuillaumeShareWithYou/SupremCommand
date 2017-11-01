@@ -35,21 +35,7 @@ public class App extends Observable {
     public void mapToContext(String command) {
 
         if(command.startsWith("//")){
-            command = command.substring(2);
-            int size = command.length();
-            StringBuilder deco = new StringBuilder();
-            deco.append("\t\t");
-            for(int i=0; i<size; i++){
-                deco.append("* ");
-            }
-            deco.append("\n");
-            deco.append("\t\t"+command);
-            deco.append("\n");
-            deco.append("\t\t");
-            for(int i=0; i<size; i++){
-                deco.append("* ");
-            }
-           setMessage(deco.toString());
+            makeComment(command);
             return;
         }
         setMessage(command,false); // renvoie le msg utilisateur avec le prompt
@@ -62,11 +48,29 @@ public class App extends Observable {
 
     }
 
+    private void makeComment(String command) {
+        command = command.substring(2);
+        int size = command.length();
+        StringBuilder deco = new StringBuilder();
+        deco.append("\t\t");
+        for(int i=0; i<size; i++){
+            deco.append("* ");
+        }
+        deco.append("\n");
+        deco.append("\t\t"+command);
+        deco.append("\n");
+        deco.append("\t\t");
+        for(int i=0; i<size; i++){
+            deco.append("* ");
+        }
+        setMessage(deco.toString());
+    }
+
 
     private void connectUser(String command) {
 
         if (command.equals("dev")) {
-            setContext(Context.STANDARD);
+            new Ecp_command(this,"ecp app --init -dev");
 
         } else {
             setMessage("wrong password");
@@ -98,10 +102,6 @@ public class App extends Observable {
         }catch (UnexistingCommandException e)
         {
             this.setMessage("This cmd doesn't exists,type !["+commandName+"] to open in windows cmd.");
-        }catch (OnlyCommentException e)
-        {
-            command = command.substring(2);
-            this.setMessage("####----"+command+"----####");
         }
         catch (ChangeTerminalException e) {
             if(getContext().compareTo(Context.STANDARD)>=0)
@@ -140,7 +140,6 @@ public class App extends Observable {
                 setMessage("Personnal application, the password is 'dev' if you forgot\nPlease enter your password:");
                 break;
             case STANDARD:
-                printWelcomeMsg();
                 setMessage("App is now ready");
                 break;
             case MANAGER:
@@ -154,16 +153,14 @@ public class App extends Observable {
     }
 
 
-    public void printWelcomeMsg() {
-        new Fread_command(this, "fread files/welcome.txt");
-    }
+
 
     public Config getConfig() {
         return config;
     }
 
     public String seekAutocompletion(String text, boolean next) {
-        String emmet = applyEmmmet(text);
+        String emmet = Emmet.applyEmmet(text);
         if(emmet!=null) return emmet;
 
         try{
@@ -178,15 +175,4 @@ public class App extends Observable {
     }
 
 
-    private String applyEmmmet(String text) {
-        switch (text)
-        {
-            case "eai":
-                return "ecp app --init -dev";
-            case "ex":
-                return "/exit";
-            default:
-                return null;
-        }
-    }
 }

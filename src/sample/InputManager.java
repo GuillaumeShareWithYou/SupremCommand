@@ -14,7 +14,7 @@ public class InputManager {
     private TextField input;
     private App app;
     private PileMessage pileMessage;
-    final KeyCombination keyCombinationShiftC = new KeyCodeCombination(KeyCode.TAB, KeyCombination.SHIFT_DOWN);
+    final KeyCombination keyCombinationShiftTab = new KeyCodeCombination(KeyCode.TAB, KeyCombination.SHIFT_DOWN);
     public InputManager(TextField input, App app) {
         this.input = input;
         this.app = app;
@@ -34,7 +34,7 @@ public class InputManager {
             } else if (e.getCode() == KeyCode.DOWN) {
                 input.setText(pileMessage.lireMessageSuiv());
                 input.positionCaret(input.getText().length());
-            }else if(keyCombinationShiftC.match(e))
+            }else if(keyCombinationShiftTab.match(e))
             {
                 String autocomplete = app.seekAutocompletion(input.getText(),false);
                 if(autocomplete!=null) {

@@ -7,6 +7,7 @@ import Engine.Message;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -31,6 +32,7 @@ public class PromptManager implements Observer {
         });
 
         welcome();
+   
     }
 
     private void welcome() {

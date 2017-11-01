@@ -15,11 +15,21 @@ public class PileMessage {
         pile = new ArrayList<>();
         indiceLecture = 0;
     }
-    
-    public void add(String msg){
-       pile.add(msg);
-       indiceLecture = pile.size();
+
+    public String getLast()
+    {
+        if(pile.size()>0){
+            return pile.get(pile.size()-1);
         }
+        return "";
+    }
+    public void add(String msg){
+        if(!getLast().equals(msg))
+        {
+            pile.add(msg);
+        }
+        indiceLecture = pile.size();
+    }
 
     public String lireMessagePrec(){
         try {

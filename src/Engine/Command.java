@@ -129,14 +129,13 @@ public class Command {
         sendMessage("You can use " + this.getCommandName() + " -h(elp) to get more informations");
     }
 
-    public static String indicateCommandName(String command) throws ChangeTerminalException, OnlyCommentException {
+    public static String indicateCommandName(String command) throws ChangeTerminalException {
         command = command.toLowerCase();
         Pattern p = Pattern.compile("[^ ]+");
         Matcher m = p.matcher(command);
         m.find();
         String commandName = m.group();
         if(commandName.charAt(0) == '!') throw new ChangeTerminalException("go to windows cmd");
-        if(commandName.startsWith("//")) throw new OnlyCommentException("it's a comment, nothing to execute");
         if (commandName.charAt(0) == '/') {
             commandName = commandName.substring(1);
         }
