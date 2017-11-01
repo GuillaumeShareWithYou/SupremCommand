@@ -18,7 +18,7 @@ public class Command {
         this.command = command;
         options = new ArrayList<>();
         args = new ArrayList<>();
-        this.command = separateOptions();
+        this.command = analyseCommand();
 
         //bloc witch take care of global options and stop the process (no inherits constructors possible)
         if (options.contains("h") || options.contains("help")) {
@@ -44,7 +44,7 @@ public class Command {
         this.command = command;
     }
 
-    protected String separateOptions() {
+    protected String analyseCommand() {
 
 
         command = deleteCommandName(command);
@@ -57,7 +57,8 @@ public class Command {
 
                 String opt = m.group();
                 opt = opt.replaceFirst("[\\-]{1,2}", "");
-                options.add(opt);
+                if(opt!="")
+                     options.add(opt);
                 command = command.replaceFirst(m.group(), "");
             }
 
@@ -69,29 +70,52 @@ public class Command {
             Pattern p = Pattern.compile("[^ ]+");
             Matcher m = p.matcher(command);
             while (m.find()) {
-                command = command.replaceFirst(m.group(), "");
+              //  command = command.replaceFirst(m.group(), "");
                 args.add(m.group());
             }
         } catch (Exception e) {
 
         }
+        System.out.println(this);
         return command;
     }
 
     private String deleteCommandName(String command) {
         try {
-            Pattern p = Pattern.compile("^[\\w\\/]+");
-            Matcher m = p.matcher(command);
-            m.find();
-            this.commandName = m.group();
 
-            command = command.replaceFirst(m.group(), "");
+            this.commandName = getCommandName(command);
+
+            command = command.replaceFirst("^/","");
+            command = command.replaceFirst(commandName, "");
         } catch (IllegalStateException e) {
 
         }
         return command;
     }
 
+    public void removeCommandName()
+    {
+        this.commandName = "";
+    }
+    public void removeOption(String option)
+    {
+        this.getOptions().remove(option);
+    }
+    public void removeArg(String arg)
+    {
+        this.getArgs().remove(arg);
+    }
+    public static String getCommandName(String command)
+    {
+        String commandName = new String();
+        Pattern pattern = Pattern.compile("^[\\w/]+");
+        Matcher matcher = pattern.matcher(command);
+        matcher.find();
+        commandName = matcher.group();
+        commandName = commandName.replaceFirst("/","");
+        return commandName;
+
+    }
 
     protected String deleteExtensionFile(String filename) {
         return filename.split("\\.")[0]; // bien echapper le point
@@ -120,6 +144,14 @@ public class Command {
         return commandName;
     }
 
+    public boolean hasArgs()
+    {
+        return this.getArgs().size()>0;
+    }
+    public boolean hasOptions()
+    {
+        return this.getOptions().size()>0;
+    }
     protected void stopCommand() {
         this.stopCommand = true;
     }
@@ -177,22 +209,24 @@ public class Command {
 
     @Override
     public String toString() {
-        return commandName + " "
-                + optionsToString() + " " + argsToString();
+        return commandName
+                + optionsToString() + argsToString();
     }
 
     protected String optionsToString() {
         StringBuilder s = new StringBuilder();
+
         for (String st : getOptions()) {
-            s.append("-" + st + " ");
+            s.append(" -" + st);
         }
         return s.toString();
     }
 
     protected String argsToString() {
         StringBuilder s = new StringBuilder();
+
         for (String st : getArgs()) {
-            s.append(st + " ");
+            s.append(" "+st);
         }
         return s.toString();
     }

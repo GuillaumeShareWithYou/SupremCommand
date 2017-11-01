@@ -12,31 +12,39 @@ public class InputManager {
     private TextField input;
     private App app;
     private PileMessage pileMessage;
+
     public InputManager(TextField input, App app) {
         this.input = input;
         this.app = app;
-         pileMessage = new PileMessage();
-        input.setOnKeyPressed(e->{
-            if(e.getCode()== KeyCode.ENTER)
-            {
+        pileMessage = new PileMessage();
+        input.setOnKeyPressed(e -> {
+
+            if (e.getCode() == KeyCode.ENTER) {
                 String command = input.getText();
-                if(!seemsOk(command)) return;
-                app.work(command);
+                if (seemsOk(command)) {
+                    app.work(command);
+                }
                 pileMessage.add(command);
                 input.setText("");
-            }else if(e.getCode()==KeyCode.UP){
+            } else if (e.getCode() == KeyCode.UP) {
                 input.setText(pileMessage.lireMessagePrec());
                 input.positionCaret(input.getText().length());
-            }else if(e.getCode()==KeyCode.DOWN)
-            {
+            } else if (e.getCode() == KeyCode.DOWN) {
                 input.setText(pileMessage.lireMessageSuiv());
                 input.positionCaret(input.getText().length());
-            }else{
-                // on verra
+            } else if(e.getCode()==KeyCode.TAB){
+                String autocomplete = app.seekAutocompletion(input.getText());
+                if(autocomplete!=null) {
+                    input.setText(autocomplete);
+                }
+                    input.requestFocus();
+                    input.positionCaret(input.getText().length());
+
             }
         });
     }
-    public boolean seemsOk(String command){
+
+    public boolean seemsOk(String command) {
         Pattern pattern = Pattern.compile("^[^\\s *0-9].*$");
         Matcher matcher = pattern.matcher(command);
         return matcher.find();

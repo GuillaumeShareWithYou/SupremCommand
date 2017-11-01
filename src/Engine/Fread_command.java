@@ -19,7 +19,7 @@ public class Fread_command extends Command {
         super(app,command);
         if(stopCommand) return;
         try{
-            openEditor = this.getOptions().contains("e");
+            openEditor = this.getOptions().contains("edit");
         }catch (IllegalStateException e){}
 
         if(openEditor)
@@ -31,7 +31,8 @@ public class Fread_command extends Command {
                 ps.redirectErrorStream(true);
                 Process pr = ps.start();
                 this.sendMessage(f.getName()+" is open in Brackets");
-            } catch (IOException e) {
+                pr.waitFor();
+            } catch (IOException |InterruptedException e) {
                 this.sendMessage("System failed to open "+f.getAbsolutePath()+" with "+editor);
             };
         }else{
@@ -42,7 +43,6 @@ public class Fread_command extends Command {
 
     public String readFile(String path)
     {
-
         try {
 
             Scanner sc = new Scanner(new File(path));

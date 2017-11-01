@@ -11,7 +11,7 @@ public class Ecp_command extends Command {
             started = init();
         }else{
 
-            if(this.getArg(0)!=null && this.getArg(0).equals("upgrade") || this.getArg(0).equals("up"))
+            if(this.getArg(0)!=null && this.getArg(0).equals("upgrade"))
             {
                 if(app.getContext().compareTo(Context.MANAGER)<0)
                 {

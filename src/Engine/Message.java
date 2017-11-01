@@ -6,6 +6,7 @@ public class Message {
 
     public Message(String content) {
         this.content = content;
+        isFromSystem = true;
     }
 
     public Message(String content, boolean isFromSystem) {

@@ -1,3 +1,3 @@
 git add * 
- git commit -m "change display and seemsok command " 
+ git commit -m " autocompletion on arg and options done" 
  git push origin master

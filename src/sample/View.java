@@ -3,13 +3,13 @@ package sample;
 import Engine.App;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class View extends Application {
 
@@ -25,16 +25,14 @@ public class View extends Application {
         prompt = (TextArea) root.getScene().lookup("#prompt");
         input =  (TextField) root.getScene().lookup("#input");
 
-
-
-
         App app = new App();
         new Controller(this,app);
         primaryStage.setResizable(true);
-
+        primaryStage.initStyle(StageStyle.DECORATED);
+        primaryStage.getIcons().setAll(new Image("file:../../ressources/command.png"));
         primaryStage.show();
-        primaryStage.setMinWidth(300);
-
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(400);
     }
 
     public TextArea getPrompt() {

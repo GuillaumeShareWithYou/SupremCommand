@@ -14,6 +14,9 @@ public class Net_command extends Command{
             if(this.getOptions().contains("firefox"))
             {
                 browser = "firefox";
+            }else if(this.getOptions().contains("chrome"))
+            {
+                browser = "chrome";
             }
             Process p = Runtime.getRuntime().exec("cmd /c start "+ browser+" "+url);
         }catch (Exception e){

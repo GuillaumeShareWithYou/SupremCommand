@@ -2,23 +2,29 @@ package Engine;
 
 
 import javax.xml.crypto.Data;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.*;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class App extends Observable {
     private Message message;
     private Context context;
     private Config config;
+    private Autocompletion autocompletion;
     public App() {
         initApp();
     }
 
     public void initApp() {
         config = new Config();
+        autocompletion = new Autocompletion(this);
         context = Context.SLEEP;
     }
 
@@ -28,21 +34,29 @@ public class App extends Observable {
 
     public void mapToContext(String command) {
 
-
-        if (command.equals("go")) { //for now
-           this.setContext(Context.STANDARD);
-           Ecp_command.setStarted(true);
-        }else if (this.getContext() == Context.CONFIRM) {
-            if (command.equals("y")) {
-                setContext(Context.STANDARD);
-
-            } else {
-                setMessage("y or n ?");
+        if(command.startsWith("//")){
+            command = command.substring(2);
+            int size = command.length();
+            StringBuilder deco = new StringBuilder();
+            deco.append("\t\t");
+            for(int i=0; i<size; i++){
+                deco.append("* ");
             }
-        } else if (this.getContext() == Context.INIT) {
+            deco.append("\n");
+            deco.append("\t\t"+command);
+            deco.append("\n");
+            deco.append("\t\t");
+            for(int i=0; i<size; i++){
+                deco.append("* ");
+            }
+           setMessage(deco.toString());
+            return;
+        }
+        setMessage(command,false); // renvoie le msg utilisateur avec le prompt
+
+        if (this.getContext() == Context.INIT) {
            connectUser(command);
         }else{
-
             workInContext(command);
         }
 
@@ -52,7 +66,7 @@ public class App extends Observable {
     private void connectUser(String command) {
 
         if (command.equals("dev")) {
-            setContext(Context.CONFIRM);
+            setContext(Context.STANDARD);
 
         } else {
             setMessage("wrong password");
@@ -68,9 +82,10 @@ public class App extends Observable {
 
             boolean exists = DatabaseService.isExistingCommand(commandName);
 
+            if(!exists) throw new UnexistingCommandException("command not found");
 
 
-            if (exists && !DatabaseService.isPermitted(commandName,getContext())) {
+            if (!DatabaseService.isPermitted(commandName,getContext())) {
                 throw new ForbiddenCommandException("You can't use this command now");
             }
             Class classe = Class.forName("Engine." + commandName + "_command");
@@ -124,17 +139,12 @@ public class App extends Observable {
             case INIT:
                 setMessage("Personnal application, the password is 'dev' if you forgot\nPlease enter your password:");
                 break;
-            case CONFIRM:
-                setMessage("Welcome to the main system\n######Initialisation######" + "\n" +
-                        "G++ -g -Wall App.o context.o command.o option.o -o executable_live.exe" + "\n" +
-                        "Do you really want to run executable_live.exe and access to the system ?[y/n]");
-                break;
             case STANDARD:
                 printWelcomeMsg();
                 setMessage("App is now ready");
                 break;
             case MANAGER:
-                setMessage("Welcome back Guillaume, we missed you !");
+                setMessage("You now have all privileges !");
                 break;
         }
     }
@@ -152,4 +162,29 @@ public class App extends Observable {
         return config;
     }
 
+    public String seekAutocompletion(String text) {
+        String emmet = applyEmmmet(text);
+        if(emmet!=null) return emmet;
+
+        try{
+            autocompletion.seek(text);
+        }catch (Exception e)
+        {
+            return null;
+        }
+        return autocompletion.getNext();
+    }
+
+
+    private String applyEmmmet(String text) {
+        switch (text)
+        {
+            case "eai":
+                return "ecp app --init -dev";
+            case "ex":
+                return "/exit";
+            default:
+                return null;
+        }
+    }
 }

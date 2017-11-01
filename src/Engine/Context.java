@@ -3,7 +3,6 @@ package Engine;
 public enum Context implements Comparable<Context> {
     SLEEP("?","sleep"),
     INIT("Sys-init","init"),
-    CONFIRM("!","confirm"),
     STANDARD("E-corp","standard"),
     MANAGER("g@math","manager");
 

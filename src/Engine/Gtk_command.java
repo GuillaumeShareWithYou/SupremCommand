@@ -14,8 +14,9 @@ public class Gtk_command extends Command{
         super(app,command);
         if(stopCommand) return;
         try{
+        String res = calcul(this.argsToString());
+        this.sendMessage(res);
 
-            this.sendMessage(calcul(this.argsToString()));
         }catch (NumberFormatException e)
         {
             sendMessage(this.argsToString()+" is not an integer, so not a prime number.");
@@ -32,7 +33,7 @@ public class Gtk_command extends Command{
         if (this.getOptions().contains("prim"))
             return isPrime(calcul);
 
-        return calcul+" = "+evaluate(calcul);
+        return String.valueOf(evaluate(calcul));
         /*
         Pattern pattern = Pattern.compile("[\\+\\-\\*\\^\\/]");
         Matcher matcher = pattern.matcher(command);
@@ -68,15 +69,17 @@ public class Gtk_command extends Command{
         */
     }
 
-    public String isPrime(String calcul) {
+    public String isPrime(String calcul) throws ScriptException, NumberFormatException{
 
-            int number = evaluate(calcul).intValue();
+        Double d = evaluate(calcul);
+        if(d.compareTo((double) Math.round(d)) > 0)
+        {
+            System.out.println("we throw");
+            throw new NumberFormatException("not prime");
+        }
+                 int number = d.intValue();
+                return number +" is "+((isPrime(number))? "" : "not ")+ "a prime number";
 
-            if (isPrime(number)) {
-                return (calcul +" ( "+ number +" ) is prime");
-            } else {
-                return (calcul +" ( "+ number +" ) is not prime");
-            }
 
 
     }
@@ -93,19 +96,11 @@ public class Gtk_command extends Command{
         }
         return isPrime;
     }
-    public static Double evaluate(String calcul)
+    public static Double evaluate(String calcul) throws ScriptException
     {
-        try{
-
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("js");
             Object result = engine.eval(calcul);
             return Double.parseDouble(result.toString());
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 }
