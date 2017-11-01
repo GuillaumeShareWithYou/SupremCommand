@@ -162,7 +162,7 @@ public class App extends Observable {
         return config;
     }
 
-    public String seekAutocompletion(String text) {
+    public String seekAutocompletion(String text, boolean next) {
         String emmet = applyEmmmet(text);
         if(emmet!=null) return emmet;
 
@@ -172,7 +172,9 @@ public class App extends Observable {
         {
             return null;
         }
-        return autocompletion.getNext();
+        if(next)
+            return autocompletion.getNext();
+        return autocompletion.getPrevious();
     }
 
 

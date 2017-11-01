@@ -3,6 +3,8 @@ package sample;
 import Engine.App;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +14,7 @@ public class InputManager {
     private TextField input;
     private App app;
     private PileMessage pileMessage;
-
+    final KeyCombination keyCombinationShiftC = new KeyCodeCombination(KeyCode.TAB, KeyCombination.SHIFT_DOWN);
     public InputManager(TextField input, App app) {
         this.input = input;
         this.app = app;
@@ -32,14 +34,23 @@ public class InputManager {
             } else if (e.getCode() == KeyCode.DOWN) {
                 input.setText(pileMessage.lireMessageSuiv());
                 input.positionCaret(input.getText().length());
-            } else if(e.getCode()==KeyCode.TAB){
-                String autocomplete = app.seekAutocompletion(input.getText());
+            }else if(keyCombinationShiftC.match(e))
+            {
+                String autocomplete = app.seekAutocompletion(input.getText(),false);
+                if(autocomplete!=null) {
+                    input.setText(autocomplete);
+                }
+                input.requestFocus();
+                input.positionCaret(input.getText().length());
+
+            }
+            else if(e.getCode()==KeyCode.TAB){
+                String autocomplete = app.seekAutocompletion(input.getText(),true);
                 if(autocomplete!=null) {
                     input.setText(autocomplete);
                 }
                     input.requestFocus();
                     input.positionCaret(input.getText().length());
-
             }
         });
     }
