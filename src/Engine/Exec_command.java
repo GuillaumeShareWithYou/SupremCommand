@@ -17,23 +17,34 @@ public class Exec_command extends Command{
             String filename = this.getArg(0);
             filename = deleteExtensionFile(filename);
 
+            final String f_filename = filename;
 
-            ProcessBuilder ps=new ProcessBuilder("cpp\\"+filename);
-            for(int i=1; i<getArgs().size();i++){
-                ps.command().add(getArg(i));
-            };
-            ps.redirectErrorStream(true);
-            Process pr = ps.start();
-            BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            String line;
+    new Thread(() -> {
+try {
 
-            StringBuilder strb = new StringBuilder();
-            while ((line = in.readLine()) != null) {
-                strb.append(line+"\n");
-            }
-            sendMessage(strb.toString());
-            pr.waitFor();
-            in.close();
+
+    ProcessBuilder ps = new ProcessBuilder("cpp\\" + f_filename);
+    for (int i = 1; i < getArgs().size(); i++) {
+        ps.command().add(getArg(i));
+    }
+    ;
+    ps.redirectErrorStream(true);
+    Process pr = ps.start();
+    BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+    String line;
+
+    StringBuilder strb = new StringBuilder();
+    while ((line = in.readLine()) != null) {
+    sendMessage(line);
+        strb.append(line + "\n");
+    }
+   // sendMessage(strb.toString());
+
+    in.close();
+}catch (Exception e){}
+    }).start();
+
+
         }catch (Exception e)
         {
             this.sendMessage("File not found");

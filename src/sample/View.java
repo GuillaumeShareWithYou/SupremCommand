@@ -25,6 +25,7 @@ public class View extends Application {
         prompt = (TextArea) root.getScene().lookup("#prompt");
         input =  (TextField) root.getScene().lookup("#input");
 
+
         App app = new App();
         new Controller(this,app);
         primaryStage.setResizable(true);

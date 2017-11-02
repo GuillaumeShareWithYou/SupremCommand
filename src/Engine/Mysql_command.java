@@ -8,6 +8,6 @@ public class Mysql_command extends Command {
         if(stopCommand) return;
 
         new Windows_command(getApp(),"!C:\\wamp64\\bin\\mysql\\mysql5.7.19\\bin\\mysql.exe -u root");
-
+        sendMessage("C:\\wamp64\\bin\\mysql\\mysql5.7.19\\bin\\mysql.exe -u root");
     }
 }
