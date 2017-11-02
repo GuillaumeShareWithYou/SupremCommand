@@ -11,35 +11,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Writer extends Thread {
-    private static boolean isWorking = false;
-    private static List<Writer> waitingThreads = new ArrayList<>();
-    private static Writer currentThread;
+    private static List<Writer> threads;
+
     private Message message;
-    private static int speed = 3;
+    private static int pauseMillisec = 10;
     private TextArea prompt;
     private Context context;
+    private WriterService service;
 
-    public Writer(Message message, TextArea prompt) {
+    public Writer(WriterService semaphore, Message message, TextArea prompt) {
+        threads = new ArrayList<>();
         this.message = message;
         this.prompt = prompt;
+        this.service = semaphore;
         setDaemon(true);
     }
 
-    public Writer(Message message, TextArea prompt, Context context) {
-        this(message, prompt);
+    public Writer(WriterService semaphore, Message message, TextArea prompt, Context context) {
+        this(semaphore,message, prompt);
         this.context = context;
     }
 
-    public synchronized static void write(TextArea prompt, Message message, Context context) {
-        Platform.runLater(() -> {
-            if (!message.isFromSystem()) {
-                prompt.appendText(context.getSymbole() + ":~$> ");
-            }
-        });
+    public synchronized static void write (TextArea prompt, Message message, Context context) {
+
+
+            Platform.runLater(() -> {
+                if (!message.isFromSystem()) {
+                    prompt.appendText(context.getSymbole() + ":~$> ");
+                }
+            });
 
             for (int i = 0; i < message.getContent().length(); i++) {
                 try {
-                    Thread.sleep(speed);
+                    Thread.sleep(pauseMillisec);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -49,13 +53,21 @@ public class Writer extends Thread {
                 });
 
             }
-        Platform.runLater(() -> {
-            prompt.appendText("\n");
-        });
+            Platform.runLater(() -> {
+                prompt.appendText("\n");
+            });
+
     }
 
     public void run() {
 
+       System.out.println(this.getName()+" entre dans run");
+        service.add(this); //6
+       System.out.println(this.getName()+" va ecrire");
         write(prompt, message, context);
+        System.out.println(this.getName()+" a ecrit");
+        service.remove(this); //5
+        System.out.println(this.getName()+" sort");
     }
 }
+

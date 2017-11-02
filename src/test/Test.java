@@ -29,13 +29,23 @@ public class Test {
         matcher = pattern.matcher("1azer");
         System.out.println("4azer "+matcher.find());*/
 
-    List<String> list = new ArrayList<>();
-    list.add("je suis");
-    list.add("une liste");
-    list.add("cyclique");
-    CycleList clist = new CycleList(list);
-    for(int i=0; i<25; i++){
-        System.out.println(clist.getPrevious());
+       for(int i=0; i<100;++i){
+        int x = i;
+          new Thread(()->{
+              execute(x);
+          }).start();
+       }
+
     }
+
+    public static synchronized void execute(int x){
+
+        try {
+            Thread.sleep(100);
+            System.out.println("Thread "+x);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }

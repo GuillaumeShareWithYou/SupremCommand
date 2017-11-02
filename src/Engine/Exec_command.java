@@ -1,55 +1,62 @@
 package Engine;
 
+
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
-public class Exec_command extends Command{
+public class Exec_command extends Command {
 
     public Exec_command(App app, String command) {
         super(app, command);
-        if(stopCommand) return;
-        try{
+        if (stopCommand) return;
 
-            String filename = this.getArg(0);
-            filename = deleteExtensionFile(filename);
-
-            final String f_filename = filename;
-
-    new Thread(() -> {
-try {
-
-
-    ProcessBuilder ps = new ProcessBuilder("cpp\\" + f_filename);
-    for (int i = 1; i < getArgs().size(); i++) {
-        ps.command().add(getArg(i));
+        new Thread(()->{
+            execute(this,command);
+        }).start();
     }
-    ;
-    ps.redirectErrorStream(true);
-    Process pr = ps.start();
-    BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-    String line;
 
-    StringBuilder strb = new StringBuilder();
-    while ((line = in.readLine()) != null) {
-    sendMessage(line);
-        strb.append(line + "\n");
-    }
-   // sendMessage(strb.toString());
+    public static synchronized void execute(Exec_command exe, String command) {
 
-    in.close();
-}catch (Exception e){}
-    }).start();
+        try {
 
+            String filename = exe.getArg(0);
+            filename = exe.deleteExtensionFile(filename);
 
-        }catch (Exception e)
-        {
-            this.sendMessage("File not found");
+            String f_filename = filename;
+                try {
 
+                    ProcessBuilder ps = new ProcessBuilder("cpp\\" + f_filename);
+                    for (int i = 1; i < exe.getArgs().size(); i++) {
+                        ps.command().add(exe.getArg(i));
+                    }
+
+                    ps.redirectErrorStream(true);
+                    Process pr = ps.start();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                    String line;
+
+                    StringBuilder strb = new StringBuilder();
+                    while ((line = in.readLine()) != null) {
+                        exe.sendMessage(line);
+                        strb.append(line + "\n");
+                    }
+                    // sendMessage(strb.toString());
+                    pr.waitFor();
+                    in.close();
+                } catch (Exception e) {
+                }
+
+        } catch (Exception e) {
+            exe.sendMessage("File not found");
         }
     }
-
 }
+
+
+

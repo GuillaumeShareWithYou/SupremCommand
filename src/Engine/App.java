@@ -1,8 +1,8 @@
 package Engine;
 
 
-import javax.xml.crypto.Data;
-import java.io.InputStream;
+
+
 import java.lang.reflect.Constructor;
 import java.sql.*;
 import java.util.Iterator;
@@ -68,13 +68,12 @@ public class App extends Observable {
 
 
     private void connectUser(String command) {
-
-        if (command.equals("dev")) {
-            new Ecp_command(this,"ecp app --init -dev");
-
-        } else {
-            setMessage("wrong password");
-        }
+      if(command.equals(config.getPassword()))
+      {
+          new Ecp_command(this,"ecp app --init -dev");
+      }else{
+          setMessage("Please try again.");
+      }
     }
 
 

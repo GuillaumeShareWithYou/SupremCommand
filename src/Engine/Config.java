@@ -9,7 +9,7 @@ public class Config {
 
 
     private String browser;
-
+    private String password = "dev";
     Config() {
         setDefault();
     }
@@ -36,5 +36,13 @@ public class Config {
             e.printStackTrace();
             System.out.println("defaut config failed");
         }
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

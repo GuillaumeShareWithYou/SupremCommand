@@ -1,3 +1,3 @@
 git add * 
- git commit -m " modif processor builder exec" 
+ git commit -m " resolution thread writer" 
  git push origin master

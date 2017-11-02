@@ -36,8 +36,8 @@ public class Fread_command extends Command {
                 this.sendMessage("System failed to open "+f.getAbsolutePath()+" with "+editor);
             };
         }else{
-            String fileContent = readFile(this.getArg(0));
-            this.sendMessage(fileContent);
+            readFile(this.getArg(0));
+          //  this.sendMessage(fileContent);
         }
     }
 
@@ -50,8 +50,10 @@ public class Fread_command extends Command {
             strb.append("\n"); //saut de ligne systematique dans un fread pour avoir le fichier aligné sur la marge
             while(sc.hasNext())
             {
-                strb.append(sc.nextLine()+"\n");
+              //   strb.append(sc.nextLine()+"\n");
+                this.sendMessage(sc.nextLine());
             }
+            sc.close();
             return strb.toString();
         }catch (FileNotFoundException e) {
             return "File not found";

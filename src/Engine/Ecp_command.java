@@ -9,7 +9,8 @@ public class Ecp_command extends Command {
 
         if (!started) {
             started = init();
-        }else{
+            return;
+        }
 
             if(this.getArg(0)!=null && this.getArg(0).equals("upgrade"))
             {
@@ -23,7 +24,7 @@ public class Ecp_command extends Command {
                     suggestHelp();
             }
 
-        }
+
 
 
 
@@ -31,19 +32,21 @@ public class Ecp_command extends Command {
 
     private boolean init() {
      try {
+         boolean init = false;
 
          if (this.getArg(0).equals("app")) {
 
              if (this.getOptions().contains("init")) {
+
                  if (this.getOptions().contains("dev")) {
                      app.setContext(Context.STANDARD);
                      if(!this.getOptions().contains("discreet"))
                      {
                          printWelcomeMsg();
                      }
+                     init = true;
                  } else {
                      app.setContext(Context.INIT);
-
                  }
              } else {
                  sendMessage("Do you mean ecp app -init ?");
@@ -51,13 +54,14 @@ public class Ecp_command extends Command {
          }else{
              sendMessage("You can only init the app for now.");
          }
-         return (app.getContext().compareTo(Context.SLEEP) > 0);
+         return init;
      }catch (Exception e)
      {
          return false;
      }
     }
-    public void printWelcomeMsg() {
+
+    public  void printWelcomeMsg() {
         new Fread_command(getApp(), "fread files/welcome.txt");
     }
     public static boolean isStarted() {
