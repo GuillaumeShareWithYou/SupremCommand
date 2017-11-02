@@ -18,7 +18,7 @@ public class PromptManager implements Observer {
 
     private App app;
     private TextArea prompt;
-    private static boolean optionThreadActive = false;
+    private static boolean optionThreadActive = true;
 
     public PromptManager(TextArea prompt, App app) {
         this.prompt = prompt;
@@ -26,13 +26,15 @@ public class PromptManager implements Observer {
         app.addObserver(this);
         prompt.setEditable(false);
         prompt.setFont(Font.font("Monospaced", 17));
-        prompt.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
-            prompt.setScrollTop(Double.MAX_VALUE);
+       /* prompt.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
+           Platform.runLater(()->{
+               prompt.setScrollTop(Double.MAX_VALUE);
+           });
 
         });
-
+*/
         welcome();
-   
+
     }
 
     private void welcome() {
@@ -42,23 +44,23 @@ public class PromptManager implements Observer {
 
     @Override
     public void update(java.util.Observable o, Object arg) {
+
         Message response = app.getMessage();
-        Platform.runLater(() -> {
-            if (optionThreadActive) {
-                new Writer(response, prompt, app.getContext()).start();
-
-            } else {
-                write(response, app.getContext());
-            }
-        });
-
+        if (optionThreadActive) {
+            new Writer(response, prompt, app.getContext()).start();
+        } else {
+            write(response, app.getContext());
+        }
     }
 
     void write(Message message, Context context) {
-     if(!message.isFromSystem())
-     {
-         prompt.appendText(context.getSymbole() + ":~$> ");
-     }
-        prompt.appendText(message.getContent()+"\n");
+        Platform.runLater(() -> {
+
+            if (!message.isFromSystem()) {
+                prompt.appendText(context.getSymbole() + ":~$> ");
+            }
+            prompt.appendText(message.getContent() + "\n");
+        });
+
     }
 }
