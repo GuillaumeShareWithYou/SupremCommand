@@ -1,3 +1,3 @@
 git add * 
- git commit -m " resolution thread writer" 
+ git commit -m " add tutorial" 
  git push origin master

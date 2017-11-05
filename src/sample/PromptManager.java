@@ -88,6 +88,7 @@ public class PromptManager implements Observer {
     private void welcome() {
 
         prompt.appendText("One command to rule them all : \t\"/show cmd\"\t\t\t(c) Guillaume\n\n");
+        prompt.appendText("/tuto to display the tutorial.\n");
     }
 
     @Override

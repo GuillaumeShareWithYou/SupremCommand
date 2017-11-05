@@ -8,9 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class Gtk_command extends Command{
+public class Calc_command extends Command{
 
-    public Gtk_command(App app, String command) {
+    public Calc_command(App app, String command) {
         super(app,command);
         if(stopCommand) return;
         try{

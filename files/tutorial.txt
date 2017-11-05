@@ -1,0 +1,13 @@
+=======Tutorial=======
+First thing to do is to init the app like that = "ecp app --init"
+Then enter the password.
+
+Type a command like that : commandeName [-options] args
+then send with ENTER
+
+You can use autocompletion with TAB or SHIFT + TAB .
+
+type commandeName --help (-h) to get information about command and her options and arguments.
+you can specify with -info / -options / -arg
+
+=======================
