@@ -76,7 +76,6 @@ public class Command {
         } catch (Exception e) {
 
         }
-        System.out.println(this);
         return command;
     }
 
@@ -208,8 +207,8 @@ public class Command {
 
     @Override
     public String toString() {
-        return commandName
-                + optionsToString() + argsToString();
+        return commandName+
+                optionsToString() + argsToString();
     }
 
     protected String optionsToString() {

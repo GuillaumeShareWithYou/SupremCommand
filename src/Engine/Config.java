@@ -9,7 +9,7 @@ public class Config {
 
 
     private String browser;
-    private String password = "dev";
+    private String password = "manon";
     Config() {
         setDefault();
     }

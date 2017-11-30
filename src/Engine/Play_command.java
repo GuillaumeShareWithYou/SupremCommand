@@ -14,12 +14,12 @@ public class Play_command extends Command {
         super(app, command);
         if(stopCommand) return;
         try{
-            command = command.substring(5);
-            command = command.replaceAll(" ","");
+            command = command.substring(4);
+            command = command.replaceAll("^ ","");
             Process p = Runtime.getRuntime().exec(gameToUrl.get(command));
 
             this.sendMessage("game started correctly");
-        }catch(IOException e)
+        }catch(IOException |NullPointerException e)
         {
             this.sendMessage("This game doesn't exist");
             suggestHelp();

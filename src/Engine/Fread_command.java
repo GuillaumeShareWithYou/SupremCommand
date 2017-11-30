@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class Fread_command extends Command {
 
-    private final static String editor = "\"C:\\Program Files (x86)\\Brackets\\Brackets.exe\"";
+    private final static String editor = "C:\\Program Files\\Sublime Text 3\\sublime_text.exe";
 
     private boolean openEditor;
 
@@ -30,7 +30,7 @@ public class Fread_command extends Command {
                 ProcessBuilder ps = new ProcessBuilder(editor,f.getAbsolutePath());
                 ps.redirectErrorStream(true);
                 Process pr = ps.start();
-                this.sendMessage(f.getName()+" is open in Brackets");
+                this.sendMessage(f.getName()+" is open in Sublime Text 3");
                 pr.waitFor();
             } catch (IOException |InterruptedException e) {
                 this.sendMessage("System failed to open "+f.getAbsolutePath()+" with "+editor);

@@ -31,17 +31,13 @@ public class PromptManager implements Observer {
         messages = new ArrayList<>();
         app.addObserver(this);
         prompt.setEditable(false);
-        prompt.setFont(Font.font("Monospaced", 17));
-       /* prompt.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
-           Platform.runLater(()->{
-               prompt.setScrollTop(Double.MAX_VALUE);
-           });
-
-        });
-*/
+        prompt.setFont(Font.font("Monospaced", 18));
         welcome();
+        startWriter();
+    }
 
-         writer = new Thread(()->{
+    private void startWriter() {
+        writer = new Thread(()->{
             while(true){
 
                 while(messages.size()>0)
@@ -82,13 +78,12 @@ public class PromptManager implements Observer {
             }
         });
         writer.setDaemon(true);
-         writer.start();
+        writer.start();
     }
 
     private void welcome() {
 
-        prompt.appendText("One command to rule them all : \t\"/show cmd\"\t\t\t(c) Guillaume\n\n");
-        prompt.appendText("/tuto to display the tutorial.\n");
+        prompt.appendText("\t\tOn est libre ici, maintenant. - Manon, 2012\n\n");
     }
 
     @Override

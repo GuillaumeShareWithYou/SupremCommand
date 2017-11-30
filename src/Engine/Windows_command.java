@@ -7,12 +7,18 @@ import java.util.List;
 
 public class Windows_command extends Command {
 
+    /**
+     * Execute une commande windows dans la console,
+     * ou ouvre une nouvelle console si précédée de '!'
+     * @param app
+     * @param command
+     */
     public Windows_command(App app, String command) {
         super(app, command);
-        boolean here = command.startsWith("!!");
+        boolean here = !command.startsWith("!");
         try {
-            command = command.substring(1); //retire the ! witch is the condition to open a windows command
-          if(here) command = command.replaceFirst("!","");
+            if(command.startsWith("!"))
+                  command = command.substring(1); //retire the ! witch is the condition to open a windows command
             String[]cmds = command.split("&&");
 
             File temp = new File("bat/temp.bat");

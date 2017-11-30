@@ -85,7 +85,7 @@ public class App extends Observable {
 
             boolean exists = DatabaseService.isExistingCommand(commandName);
 
-            if(!exists) throw new UnexistingCommandException("command not found");
+            if(!exists) throw new ChangeTerminalException("command not found");
 
 
             if (!DatabaseService.isPermitted(commandName,getContext())) {
@@ -96,11 +96,8 @@ public class App extends Observable {
             constructor.newInstance(this, command);
 
         } catch (ForbiddenCommandException e) {
-            this.setMessage("You can't use the command "+commandName+" at the moment.");
+            this.setMessage("You can't use the command " + commandName + " at the moment.");
 
-        }catch (UnexistingCommandException e)
-        {
-            this.setMessage("This cmd doesn't exists,type !["+commandName+"] to open in windows cmd.");
         }
         catch (ChangeTerminalException e) {
             if(getContext().compareTo(Context.STANDARD)>=0)
@@ -136,7 +133,7 @@ public class App extends Observable {
         this.context = context;
         switch (context) {
             case INIT:
-                setMessage("Personnal application, the password is 'dev' if you forgot\nPlease enter your password:");
+                setMessage("Please enter your password:");
                 break;
             case STANDARD:
                 setMessage("App is now ready");

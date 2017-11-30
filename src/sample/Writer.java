@@ -14,7 +14,7 @@ public class Writer extends Thread {
     private static List<Writer> threads;
 
     private Message message;
-    private static int pauseMillisec = 10;
+    private static int pauseMillisec = 3;
     private TextArea prompt;
     private Context context;
     private WriterService service;

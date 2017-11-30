@@ -9,7 +9,7 @@ public abstract class WebOriented_command extends Command{
     protected String argsToString()
     {
         StringBuilder s = new StringBuilder();
-        s.append(getUrl());
+        s.append(" ".concat(getUrl()));
         for(String st : getArgs())
         {
             s.append(st+"+");

@@ -6,6 +6,7 @@ public class Net_command extends Command{
     private String url;
     public Net_command(App app, String command) {
         super(app, command);
+        browser = app.getConfig().getBrowser();
         if(stopCommand) return;
 
         browser = app.getConfig().getBrowser();
