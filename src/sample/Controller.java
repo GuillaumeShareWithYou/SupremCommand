@@ -10,7 +10,7 @@ public class Controller {
     {
         promptManager = new PromptManager(v.getPrompt(),app);
         inputManager = new InputManager(v.getInput(),app);
-
+        app.getConfig().setPrompt(promptManager);
         //ne pas perdre le focus sur input
         v.getPrompt().setOnMouseClicked(e->v.getInput().requestFocus());
     }

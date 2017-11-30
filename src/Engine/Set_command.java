@@ -23,7 +23,11 @@ public class Set_command extends Command{
             {
                 app.getConfig().setBrowser(this.getArg(1));
                 sendMessage("Browser changed.");
-            }else{
+            }else if(variableToSet.equals("color"))
+            {
+                app.getConfig().setColor(this.getArg(1));
+            }
+            else{
                 sendMessage("this variable can't be set. check it with set --arg ");
             }
         }else{

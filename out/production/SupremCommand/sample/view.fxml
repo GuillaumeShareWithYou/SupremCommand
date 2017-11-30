@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            mouseTransparent="false" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/2.2">
   <BorderPane id="struct" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -14,7 +14,7 @@
     </bottom>
     <center>
       <TextArea id="prompt" editable="false" prefHeight="360.0" prefWidth="600.0"
-                style="-fx-background-color: #9696db;-fx-border-radius: 0 0 0 0;-fx-background-radius: 0 0 0 0;-fx-text-fill: #f00003;"
+                style="-fx-background-color: #7a8ca9;-fx-border-radius: 0 0 0 0;-fx-background-radius: 0 0 0 0;-fx-text-fill: #666;"
                 wrapText="true"/>
     </center>
   </BorderPane>

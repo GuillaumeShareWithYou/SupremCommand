@@ -2,6 +2,7 @@ package test;
 
 
 import Engine.App;
+import Engine.Color;
 import Engine.Command;
 import Engine.CycleList;
 
@@ -27,10 +28,12 @@ public class Test {
         System.out.println("\\ 4azer "+matcher.find());
         matcher = pattern.matcher("1azer");
         System.out.println("4azer "+matcher.find());*/
-
+/*
        Pattern p = Pattern.compile("(\\w)\\1+");
        Matcher m = p.matcher("array");
        m.find();
-        System.out.println(m.group());
+        System.out.println(m.group()); */
+
+        System.out.println(Color.valueOf("BLUE").getColor());
     }
 }

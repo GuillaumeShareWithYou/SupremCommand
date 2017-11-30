@@ -1,3 +1,3 @@
 git add * 
- git commit -m " a lot of small changes" 
+ git commit -m " ajout couleurs" 
  git push origin master

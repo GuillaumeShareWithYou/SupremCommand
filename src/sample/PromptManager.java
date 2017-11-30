@@ -2,6 +2,7 @@ package sample;
 
 
 import Engine.App;
+import Engine.Color;
 import Engine.Context;
 import Engine.Message;
 import javafx.application.Platform;
@@ -14,11 +15,13 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.Observer;
 
 public class PromptManager implements Observer {
 
     private App app;
+    private Color color;
     private TextArea prompt;
     private static boolean optionThreadActive = true;
     private WriterService writerService;
@@ -31,7 +34,8 @@ public class PromptManager implements Observer {
         messages = new ArrayList<>();
         app.addObserver(this);
         prompt.setEditable(false);
-        prompt.setFont(Font.font("Monospaced", 18));
+        prompt.setFont(Font.font("monospace", 18));
+        prompt.setStyle("-fx-text-fill: "+Color.LIGHTBLUE.getColor());
         welcome();
         startWriter();
     }
@@ -86,8 +90,9 @@ public class PromptManager implements Observer {
         prompt.appendText("\t\tOn est libre ici, maintenant. - Manon, 2012\n\n");
     }
 
-    @Override
-    public void update(java.util.Observable o, Object arg) {
+
+    public void update(Observable o, Object arg) {
+    setColor(((App)o).getConfig().getColor());
 
         Message response = app.getMessage();
         if (optionThreadActive) {
@@ -112,5 +117,31 @@ public class PromptManager implements Observer {
             prompt.appendText(message.getContent() + "\n");
         });
 
+    }
+
+    public App getApp() {
+        return app;
+    }
+
+    public void setApp(App app) {
+        this.app = app;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+
+        this.color = color;
+        prompt.setStyle("-fx-text-fill: "+getColor().getColor());
+    }
+
+    public TextArea getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(TextArea prompt) {
+        this.prompt = prompt;
     }
 }
