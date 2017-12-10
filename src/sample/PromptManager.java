@@ -2,21 +2,15 @@ package sample;
 
 
 import Engine.App;
-import Engine.Color;
-import Engine.Context;
-import Engine.Message;
+import Engine.tools.Color;
+import Engine.tools.Context;
+import Engine.tools.Message;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import sample.tools.WriterService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class PromptManager implements Observer {
 
@@ -34,7 +28,7 @@ public class PromptManager implements Observer {
         messages = new ArrayList<>();
         app.addObserver(this);
         prompt.setEditable(false);
-        prompt.setFont(Font.font("monospace", 18));
+        prompt.setFont(Font.font("monospace", 12));
         prompt.setStyle("-fx-text-fill: "+Color.LIGHTBLUE.getColor());
         welcome();
         startWriter();
@@ -55,7 +49,7 @@ public class PromptManager implements Observer {
 
                     for (int i = 0; i < msg.getContent().length(); i++) {
                         try {
-                            Thread.sleep(1);
+                            Thread.sleep(0);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -87,7 +81,18 @@ public class PromptManager implements Observer {
 
     private void welcome() {
 
-        prompt.appendText("\t\tOn est libre ici, maintenant. - Manon, 2012\n\n");
+        String msg = chooseMsg();
+        prompt.appendText("\t\t"+msg+"\n\n");
+    }
+
+    private String chooseMsg() {
+        List<String> messages = new ArrayList<>();
+        messages.add("On marche capuché pour pas voir que le ciel nous tombe sur la gueule.");
+        messages.add("Chez moi ça fait la passe à dix, mais c'est la cess qui a remplacé le ballon.");
+        messages.add("La plus amère des vérités vaut mieux que le plus doux des mensonges.");
+        int i = new Random().nextInt(messages.size());
+
+        return messages.get(i);
     }
 
 

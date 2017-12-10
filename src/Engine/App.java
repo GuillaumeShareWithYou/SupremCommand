@@ -3,15 +3,20 @@ package Engine;
 
 
 
+import Engine.autocomplete.Autocompletion;
+import Engine.autocomplete.Emmet;
+import Engine.commands.Command;
+import Engine.commands.Ecp_command;
+import Engine.commands.Windows_command;
+import Engine.db.DatabaseService;
+import Engine.exceptions.ChangeTerminalException;
+import Engine.exceptions.ForbiddenCommandException;
+import Engine.tools.Config;
+import Engine.tools.Context;
+import Engine.tools.Message;
+
 import java.lang.reflect.Constructor;
-import java.sql.*;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class App extends Observable {
     private Message message;
@@ -91,7 +96,7 @@ public class App extends Observable {
             if (!DatabaseService.isPermitted(commandName,getContext())) {
                 throw new ForbiddenCommandException("You can't use this command now");
             }
-            Class classe = Class.forName("Engine." + commandName + "_command");
+            Class classe = Class.forName("Engine.commands." + commandName + "_command");
             Constructor constructor = classe.getConstructor(Class.forName("Engine.App"), Class.forName("java.lang.String"));
             constructor.newInstance(this, command);
 

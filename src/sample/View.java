@@ -19,8 +19,8 @@ public class View extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("view.fxml"));
         root.getStylesheets().add("sample/css/style.css");
-        primaryStage.setTitle("HACKED COMMAND");
-        primaryStage.setScene(new Scene(root,950,490));
+        primaryStage.setTitle("SupCommand.py");
+        primaryStage.setScene(new Scene(root,1180,650));
 
         prompt = (TextArea) root.getScene().lookup("#prompt");
         input =  (TextField) root.getScene().lookup("#input");

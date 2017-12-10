@@ -1,18 +1,7 @@
 package test;
 
 
-import Engine.App;
-import Engine.Color;
-import Engine.Command;
-import Engine.CycleList;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import Engine.tools.Color;
 
 public class Test {
 
