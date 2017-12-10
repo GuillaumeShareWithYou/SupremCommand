@@ -1,3 +1,3 @@
 git add * 
- git commit -m " avant de changer le model observer observable" 
+ git commit -m " successful propertychangelistener" 
  git push origin master

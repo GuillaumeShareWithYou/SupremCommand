@@ -3,6 +3,7 @@ package sample;
 
 import Engine.App;
 import Engine.tools.Color;
+import Engine.tools.Config;
 import Engine.tools.Context;
 import Engine.tools.Message;
 import javafx.application.Platform;
@@ -10,12 +11,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 import sample.tools.WriterService;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 
-public class PromptManager implements Observer {
+public class PromptManager implements PropertyChangeListener {
 
     private App app;
-    private Color color;
+    private Color color;    
     private TextArea prompt;
     private static boolean optionThreadActive = true;
     private WriterService writerService;
@@ -26,10 +29,9 @@ public class PromptManager implements Observer {
         this.prompt = prompt;
         this.app = app;
         messages = new ArrayList<>();
-        app.addObserver(this);
         prompt.setEditable(false);
         prompt.setFont(Font.font("monospace", 12));
-        prompt.setStyle("-fx-text-fill: "+Color.LIGHTBLUE.getColor());
+        setColor(app.getConfig().getColor());
         welcome();
         startWriter();
     }
@@ -88,7 +90,6 @@ public class PromptManager implements Observer {
     private String chooseMsg() {
         List<String> messages = new ArrayList<>();
         messages.add("On marche capuché pour pas voir que le ciel nous tombe sur la gueule.");
-        messages.add("Chez moi ça fait la passe à dix, mais c'est la cess qui a remplacé le ballon.");
         messages.add("La plus amère des vérités vaut mieux que le plus doux des mensonges.");
         int i = new Random().nextInt(messages.size());
 
@@ -97,20 +98,9 @@ public class PromptManager implements Observer {
 
 
     public void update(Observable o, Object arg) {
-    setColor(((App)o).getConfig().getColor());
 
-        Message response = app.getMessage();
-        if (optionThreadActive) {
 
-           // new Writer(writerService,response, prompt, app.getContext()).start();
-            messages.add(response);
-            synchronized (writer){
-                writer.notify();
-            }
 
-        } else {
-            write(response, app.getContext());
-        }
     }
 
     void write(Message message, Context context) {
@@ -148,5 +138,28 @@ public class PromptManager implements Observer {
 
     public void setPrompt(TextArea prompt) {
         this.prompt = prompt;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getSource().getClass() == App.class)
+        {
+            Message response = app.getMessage();
+            if (optionThreadActive) {
+
+                // new Writer(writerService,response, prompt, app.getContext()).start();
+                messages.add(response);
+                synchronized (writer){
+                    writer.notify();
+                }
+
+            } else {
+                write(response, app.getContext());
+            }
+        }else if(evt.getSource().getClass() == Config.class){
+            if(evt.getPropertyName().equals("color"))
+                 setColor(app.getConfig().getColor());
+
+        }
     }
 }

@@ -1,5 +1,6 @@
 package Engine.tools;
 
+import Engine.App;
 import Engine.db.Database;
 
 import java.sql.Connection;
@@ -8,14 +9,15 @@ import java.sql.Statement;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Config extends Observable {
+public class Config {
 
-    Observer prompt;
+    App app;
     private String browser;
     private String password = "manon";
     private Color color = Color.LIGHTBLUE;
-    public Config() {
+    public Config(App _app) {
         setDefault();
+        this.app = _app;
     }
 
     public String getBrowser() {
@@ -58,18 +60,20 @@ public class Config extends Observable {
             e.printStackTrace();
         }
     }
-    public void setColor(Color color) {
-        this.color = color;
-        this.setChanged();
-        this.notifyObservers();
+
+    /**
+     * Change la couleur et l'envoie au prompt pour qu'il se mette à jour
+     * @param _color
+     */
+    public void setColor(Color _color) {
+        notifyPrompt("color", this.color, this.color = _color);
+
     }
 
-    public Observer getPrompt() {
-        return prompt;
-    }
+    private void notifyPrompt(String field, Object oldValue, Object newValue){
 
-    public void setPrompt(Observer prompt) {
-        this.prompt = prompt;
+        app.notifyObservers(this, field, oldValue, newValue);
+
     }
 
     public String getPassword() {

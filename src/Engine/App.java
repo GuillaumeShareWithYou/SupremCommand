@@ -15,22 +15,29 @@ import Engine.tools.Config;
 import Engine.tools.Context;
 import Engine.tools.Message;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
-public class App extends Observable {
+public class App {
     private Message message;
     private Context context;
     private Config config;
     private Autocompletion autocompletion;
+    private List<PropertyChangeListener> listeners;
     public App() {
         initApp();
     }
 
     public void initApp() {
-        config = new Config();
+        config = new Config(this);
         autocompletion = new Autocompletion(this);
         context = Context.SLEEP;
+        listeners = new ArrayList<>();
     }
 
     public void work(String command) {
@@ -120,16 +127,22 @@ public class App extends Observable {
     }
 
     public void setMessage(String message) {
-        this.message = new Message(message);
-        this.setChanged();
-        this.notifyObservers();
-    }
-    public void setMessage(String message, boolean isFromSystem) {
-        this.message = new Message(message,isFromSystem);
-        this.setChanged();
-        this.notifyObservers();
+        setMessage(message, true);
     }
 
+    public void setMessage(String _message, boolean isFromSystem) {
+    notifyObservers(this,
+            "message",
+            this.message,
+            this.message =  new Message(_message,isFromSystem));
+    }
+
+    public void notifyObservers(Object object, String field, Object oldValue, Object newValue) {
+
+        for(PropertyChangeListener listener : listeners){
+            listener.propertyChange(new PropertyChangeEvent(object, field, oldValue, newValue));
+        }
+    }
     public Context getContext() {
         return context;
     }
@@ -175,5 +188,7 @@ public class App extends Observable {
         return autocompletion.getPrevious();
     }
 
-
+   public void addListener(PropertyChangeListener listener){
+        this.listeners.add(listener);
+   }
 }
