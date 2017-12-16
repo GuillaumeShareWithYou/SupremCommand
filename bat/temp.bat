@@ -1,3 +1,3 @@
 git add * 
- git commit -m " successful propertychangelistener" 
+ git commit -m "regex command amelior" 
  git push origin master

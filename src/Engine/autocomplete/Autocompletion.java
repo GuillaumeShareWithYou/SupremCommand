@@ -25,9 +25,9 @@ public class Autocompletion {
 
     public void seek(String text)  {
 
-        Pattern pattern = Pattern.compile("[^ ]*$");
+        Pattern pattern = Pattern.compile("[\\S]+$");
         Matcher matcher = pattern.matcher(text);
-        matcher.find();
+        if(!matcher.find()) return;
         lastKeyword = matcher.group();
         if (lastKeyword.equals(previousLastKeyword))
         {
@@ -49,7 +49,7 @@ public class Autocompletion {
             command.removeCommandName();
         } else if (lastKeyword.startsWith("-")) {
             type = TypeOfWord.OPT;
-            lastKeyword = lastKeyword.replaceFirst("-{1,2}", "");
+            lastKeyword = lastKeyword.replaceFirst("-+", "");
             cycleList = new CycleList(DatabaseService.getAllOptionsBeginWith(app.getContext(),command.getCommandName(), lastKeyword));
             command.removeOption(lastKeyword);
             previousLastKeyword = cycleList.getCurrent();
@@ -73,21 +73,67 @@ public class Autocompletion {
         {
             str.append(variable);
         }
+
         return str.toString();
     }
     public String getPrevious()
     {
         StringBuilder str =  new StringBuilder(command.toString());
-        if(type!=TypeOfWord.NAME)
-            str.append(" ");
         if(type==TypeOfWord.OPT)
             str.append("-");
         str.append(cycleList.getPrevious());
         return str.toString();
     }
+
+    public App getApp() {
+        return app;
+    }
+
+    public void setApp(App app) {
+        this.app = app;
+    }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public CycleList getCycleList() {
+        return cycleList;
+    }
+
+    public void setCycleList(CycleList cycleList) {
+        this.cycleList = cycleList;
+    }
+
+    public String getLastKeyword() {
+        return lastKeyword;
+    }
+
+    public void setLastKeyword(String lastKeyword) {
+        this.lastKeyword = lastKeyword;
+    }
+
+    public String getPreviousLastKeyword() {
+        return previousLastKeyword;
+    }
+
+    public void setPreviousLastKeyword(String previousLastKeyword) {
+        this.previousLastKeyword = previousLastKeyword;
+    }
+
+    public TypeOfWord getType() {
+        return type;
+    }
+
+    public void setType(TypeOfWord type) {
+        this.type = type;
+    }
 }
 
 enum TypeOfWord{
-    NAME, ARG, OPT;
-
+    NAME, ARG, OPT
 }

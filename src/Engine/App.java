@@ -29,6 +29,7 @@ public class App {
     private Config config;
     private Autocompletion autocompletion;
     private List<PropertyChangeListener> listeners;
+    private Command m_command;
     public App() {
         initApp();
     }
@@ -50,7 +51,6 @@ public class App {
             makeComment(command);
             return;
         }
-        setMessage(command,false); // renvoie le msg utilisateur avec le prompt
 
         if (this.getContext() == Context.INIT) {
            connectUser(command);
@@ -92,13 +92,15 @@ public class App {
     public void workInContext(String command) {
         String commandName = null;
         try {
+            m_command = new Command(this,command);
+            if(m_command.isStopCommand()) {
+                return;
+            }
+            setMessage(m_command.toString(), false);
+            commandName = m_command.getCommandName();
 
-            commandName = Command.indicateCommandName(command);
-
-            boolean exists = DatabaseService.isExistingCommand(commandName);
-
-            if(!exists) throw new ChangeTerminalException("command not found");
-
+            if(!DatabaseService.isExistingCommand(commandName))
+                throw new ChangeTerminalException("command not found");
 
             if (!DatabaseService.isPermitted(commandName,getContext())) {
                 throw new ForbiddenCommandException("You can't use this command now");

@@ -3,6 +3,9 @@ package test;
 
 import Engine.tools.Color;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Test {
 
 
@@ -22,7 +25,8 @@ public class Test {
        Matcher m = p.matcher("array");
        m.find();
         System.out.println(m.group()); */
-
+        String dateHeure = new SimpleDateFormat("EEEE dd MMMM YYYY HH:mm:ss").format(new Date());
+        System.out.println(dateHeure);
         System.out.println(Color.valueOf("BLUE").getColor());
     }
 }

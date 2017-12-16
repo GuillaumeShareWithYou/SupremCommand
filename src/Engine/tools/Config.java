@@ -44,7 +44,7 @@ public class Config {
 
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println("defaut config failed");
+            System.out.println("default config failed");
         }
     }
 

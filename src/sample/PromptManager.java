@@ -9,16 +9,18 @@ import Engine.tools.Message;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
+import sample.tools.Writer;
 import sample.tools.WriterService;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PromptManager implements PropertyChangeListener {
 
     private App app;
-    private Color color;    
+    private Color color;
     private TextArea prompt;
     private static boolean optionThreadActive = true;
     private WriterService writerService;
@@ -51,7 +53,7 @@ public class PromptManager implements PropertyChangeListener {
 
                     for (int i = 0; i < msg.getContent().length(); i++) {
                         try {
-                            Thread.sleep(0);
+                            Thread.sleep(1);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -89,21 +91,15 @@ public class PromptManager implements PropertyChangeListener {
 
     private String chooseMsg() {
         List<String> messages = new ArrayList<>();
-        messages.add("On marche capuché pour pas voir que le ciel nous tombe sur la gueule.");
-        messages.add("La plus amère des vérités vaut mieux que le plus doux des mensonges.");
+        String date = new SimpleDateFormat("EEEE dd MMMM YYYY", Locale.ENGLISH).format(new Date());
+        String heure = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        messages.add("Session started the "+date+" at "+heure);
         int i = new Random().nextInt(messages.size());
 
         return messages.get(i);
     }
 
-
-    public void update(Observable o, Object arg) {
-
-
-
-    }
-
-    void write(Message message, Context context) {
+    private void write(Message message, Context context) {
         Platform.runLater(() -> {
 
             if (!message.isFromSystem()) {
@@ -146,8 +142,6 @@ public class PromptManager implements PropertyChangeListener {
         {
             Message response = app.getMessage();
             if (optionThreadActive) {
-
-                // new Writer(writerService,response, prompt, app.getContext()).start();
                 messages.add(response);
                 synchronized (writer){
                     writer.notify();
@@ -158,7 +152,7 @@ public class PromptManager implements PropertyChangeListener {
             }
         }else if(evt.getSource().getClass() == Config.class){
             if(evt.getPropertyName().equals("color"))
-                 setColor(app.getConfig().getColor());
+                 setColor((Color)evt.getNewValue());
 
         }
     }

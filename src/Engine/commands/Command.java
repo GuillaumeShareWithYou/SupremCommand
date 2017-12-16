@@ -1,13 +1,14 @@
 package Engine.commands;
 
 import Engine.App;
-import Engine.exceptions.ChangeTerminalException;
 import Engine.db.DatabaseService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Command {
     protected App app;
@@ -17,13 +18,14 @@ public class Command {
     protected List<String> args;
     protected boolean stopCommand = false;
 
-    public Command(App app, String command) {
+    public Command(App app, String _command) {
         this.app = app;
-        this.command = command;
+        this.command = _command;
         options = new ArrayList<>();
         args = new ArrayList<>();
-        this.command = analyseCommand();
+      //  this.command = analyseCommand();
 
+        analyseCommand(_command);
         //bloc witch take care of global options and stop the process (no inherits constructors possible)
         if (options.contains("h") || options.contains("help")) {
             String info = DatabaseService.getCommandDescription(getCommandName()) + "\n";
@@ -44,57 +46,38 @@ public class Command {
             sendMessage(DatabaseService.printCommandArguments(getCommandName()));
             stopCommand();
         }
-        //get origin command
-        this.command = command;
+    }
+    protected void analyseCommand(String command){
+
+        //remove commandName and think about the possible '/' at beginning
+        this.commandName = command.trim().split(" ")[0].replaceFirst("^/","");
+        String commandWithoutName = command.replaceFirst(this.commandName, "").trim();
+        this.commandName = String.valueOf(this.commandName.charAt(0)).toUpperCase()
+              +  this.commandName.substring(1).toLowerCase();
+        /*looking for options in the command
+          An option begin with '-' and doesn't contains numbers so i apply a
+        positive look backward for '-' before word */
+        Pattern pattern = Pattern.compile("(?<=-)\\b[a-zA-Z]+\\b");
+        Matcher matcher = pattern.matcher(commandWithoutName);
+        while(matcher.find()){
+            this.options.add(matcher.group());
+        }
+        /*
+                looking for args in the command
+                negative look backward for '-' before every word with letters
+                negative look ahead for '-' after symboles and digits,
+                to be able to use calculations with calc_command
+                with + - * / ( ) . %
+                So options can't contain digit later but it's ok.
+         */
+        //
+        pattern = Pattern.compile("(?<!-)\\b[\\w./*+-:?=]+|[\\d+*/()-.%]+(?![a-zA-Z-])");
+        matcher = pattern.matcher(commandWithoutName);
+        while(matcher.find()){
+            this.args.add(matcher.group());
+        }
     }
 
-    protected String analyseCommand() {
-
-
-        command = deleteCommandName(command);
-        try {
-
-            // Pattern composé d'un ou deux tirets suivis de lettres ou d'underscore (pas de nombres pour faire des soustractions)
-            Pattern p = Pattern.compile("[\\-]{1,2}[a-zA-Z_]+");
-            Matcher m = p.matcher(command);
-            while (m.find()) {
-
-                String opt = m.group();
-                opt = opt.replaceFirst("[\\-]{1,2}", "");
-                if(opt!="")
-                     options.add(opt);
-                command = command.replaceFirst(m.group(), "");
-            }
-
-        } catch (Exception e) {
-
-        }
-        try {
-
-            Pattern p = Pattern.compile("[^ ]+");
-            Matcher m = p.matcher(command);
-            while (m.find()) {
-              //  command = command.replaceFirst(m.group(), "");
-                args.add(m.group());
-            }
-        } catch (Exception e) {
-
-        }
-        return command;
-    }
-
-    private String deleteCommandName(String command) {
-        try {
-
-            this.commandName = getCommandName(command);
-
-            command = command.replaceFirst("^/","");
-            command = command.replaceFirst(commandName, "");
-        } catch (IllegalStateException e) {
-
-        }
-        return command;
-    }
 
     public void removeCommandName()
     {
@@ -108,17 +91,6 @@ public class Command {
     {
         this.getArgs().remove(arg);
     }
-    public static String getCommandName(String command)
-    {
-        String commandName = new String();
-        Pattern pattern = Pattern.compile("^[\\w/]+");
-        Matcher matcher = pattern.matcher(command);
-        matcher.find();
-        commandName = matcher.group();
-        commandName = commandName.replaceFirst("/","");
-        return commandName;
-
-    }
 
     protected String deleteExtensionFile(String filename) {
         return filename.split("\\.")[0]; // bien echapper le point
@@ -130,20 +102,6 @@ public class Command {
 
     protected void suggestHelp() {
         sendMessage("You can use " + this.getCommandName() + " -h(elp) to get more informations");
-    }
-
-    public static String indicateCommandName(String command) throws ChangeTerminalException {
-        command = command.toLowerCase();
-        Pattern p = Pattern.compile("[^ ]+");
-        Matcher m = p.matcher(command);
-        m.find();
-        String commandName = m.group();
-        if(commandName.charAt(0) == '!') throw new ChangeTerminalException("go to windows cmd");
-        if (commandName.charAt(0) == '/') {
-            commandName = commandName.substring(1);
-        }
-        commandName = commandName.replaceFirst(String.valueOf(commandName.charAt(0)), String.valueOf(commandName.charAt(0)).toUpperCase());
-        return commandName;
     }
 
     public boolean hasArgs()
@@ -191,10 +149,9 @@ public class Command {
     }
 
     public String getArg(int index) {
-        if (index >= 0 && index < this.args.size()) {
+        try{
             return this.args.get(index);
-        }
-        return null;
+        }catch (IndexOutOfBoundsException e){return null;}
     }
 
     public void setArg(int index, String arg) {
@@ -209,27 +166,27 @@ public class Command {
         this.commandName = commandName;
     }
 
+    public boolean isStopCommand() {
+        return stopCommand;
+    }
+
+    public void setStopCommand(boolean stopCommand) {
+        this.stopCommand = stopCommand;
+    }
+
     @Override
     public String toString() {
-        return commandName+
-                optionsToString() + argsToString();
+        return Arrays.asList(commandName, optionsToString(), argsToString())
+                .stream()
+                .filter(e->e.length()>0)
+                .collect(Collectors.joining(" "));
     }
 
     protected String optionsToString() {
-        StringBuilder s = new StringBuilder();
-
-        for (String st : getOptions()) {
-            s.append(" -" + st);
-        }
-        return s.toString();
+     return options.stream().map(s->"-"+s).collect(Collectors.joining(" "));
     }
 
     protected String argsToString() {
-        StringBuilder s = new StringBuilder();
-
-        for (String st : getArgs()) {
-            s.append(" "+st);
-        }
-        return s.toString();
+        return args.stream().collect(Collectors.joining(" "));
     }
 }

@@ -2,6 +2,8 @@ package Engine.commands;
 
 import Engine.App;
 
+import java.util.stream.Collectors;
+
 public abstract class WebOriented_command extends Command{
     protected String url_base;
     public WebOriented_command(App app, String command) {
@@ -10,16 +12,11 @@ public abstract class WebOriented_command extends Command{
     @Override
     protected String argsToString()
     {
-        StringBuilder s = new StringBuilder();
-        s.append(" ".concat(getUrl()));
-        for(String st : getArgs())
-        {
-            s.append(st+"+");
-        }
-        String search = s.toString();
-        search = search.substring(0,search.length()-1);
-        return search;
-
+        StringBuilder s = new StringBuilder(this.getUrl());
+        s.append(
+                getArgs().stream().collect(Collectors.joining("+"))
+        );
+        return s.toString();
     }
 
     public String getUrl() {

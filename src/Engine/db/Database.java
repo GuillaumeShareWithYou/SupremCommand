@@ -19,11 +19,11 @@ public class Database {
 
             db = DriverManager.getConnection("jdbc:mysql://localhost/"+database, user, password);
 
-            return db;
+
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-          return null;
+          return db;
     }
 
 }

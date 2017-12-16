@@ -12,8 +12,9 @@ public class Net_command extends Command{
         if(stopCommand) return;
 
         browser = app.getConfig().getBrowser();
+        System.out.println(this);
         try{
-            url = this.getArg(0);
+            url = this.argsToString();
             if(this.getOptions().contains("firefox"))
             {
                 browser = "firefox";

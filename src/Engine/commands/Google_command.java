@@ -9,9 +9,7 @@ public class Google_command extends WebOriented_command {
         if(stopCommand) return;
 
         setUrl("https://www.google.fr/search?q=");
-        String search = null;
         try{
-            search = this.getArg(0);
             new Net_command(getApp(),this.toString());
 
         }catch(Exception e){

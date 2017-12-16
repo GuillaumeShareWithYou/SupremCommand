@@ -10,11 +10,12 @@ import java.util.stream.IntStream;
 
 public class Calc_command extends Command{
 
+    private String res;
     public Calc_command(App app, String command) {
         super(app,command);
         if(stopCommand) return;
         try{
-        String res = calcul(this.argsToString());
+        res = calcul(this.argsToString());
         this.sendMessage(res);
 
         }catch (NumberFormatException e)
@@ -102,5 +103,8 @@ public class Calc_command extends Command{
             ScriptEngine engine = manager.getEngineByName("js");
             Object result = engine.eval(calcul);
             return Double.parseDouble(result.toString());
+    }
+    public String getRes(){
+        return this.res;
     }
 }

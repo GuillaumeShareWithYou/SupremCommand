@@ -42,4 +42,12 @@ public class CycleList {
     public void setList(List<String> list) {
         this.list = list;
     }
+
+    @Override
+    public String toString() {
+        return "CycleList{" +
+                "list=" + list +
+                "\n current index=" + index +
+                '}';
+    }
 }

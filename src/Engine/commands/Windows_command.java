@@ -32,7 +32,7 @@ public class Windows_command extends Command {
             System.out.println(this);
         if(here)
         {
-            final List<String> commands = new ArrayList<String>();
+            final List<String> commands = new ArrayList<>();
             ProcessBuilder ps = new ProcessBuilder(commands);
             ps.command().add(temp.getAbsolutePath());
             ps.redirectErrorStream(true);
