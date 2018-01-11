@@ -14,10 +14,10 @@ public class Config {
     App app;
     private String browser;
     private String password = "manon";
-    private Color color = Color.LIGHTBLUE;
+    private Color color;
     public Config(App _app) {
-        setDefault();
         this.app = _app;
+        setDefault();
     }
 
     public String getBrowser() {
@@ -39,8 +39,10 @@ public class Config {
                  this.browser = rs.getString("config_value");
             //recuperer la couleur par défault
             rs = st.executeQuery("select config_value from config where config_var='color'");
-            if(rs.next())
-                this.color = Color.valueOf(rs.getString("config_value"));
+            if(rs.next()){
+
+                setColor(Color.valueOf(rs.getString("config_value")));
+            }
 
         }catch (Exception e){
             e.printStackTrace();
@@ -72,7 +74,8 @@ public class Config {
 
     private void notifyPrompt(String field, Object oldValue, Object newValue){
 
-        app.notifyObservers(this, field, oldValue, newValue);
+        if(app.getListeners().size() > 0)
+              app.notifyObservers(this, field, oldValue, newValue);
 
     }
 

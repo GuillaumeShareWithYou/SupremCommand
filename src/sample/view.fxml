@@ -14,7 +14,7 @@
     </bottom>
     <center>
       <TextArea id="prompt" editable="false" prefHeight="360.0" prefWidth="600.0"
-                style="-fx-background-color: #000000;-fx-border-radius: 0 0 0 0;-fx-background-radius: 0 0 0 0;-fx-text-fill: #000000;"
+                style="-fx-background-color: #3544df;-fx-border-radius: 0 0 0 0;-fx-background-radius: 0 0 0 0;-fx-text-fill: #000000;"
                 wrapText="true"/>
     </center>
   </BorderPane>

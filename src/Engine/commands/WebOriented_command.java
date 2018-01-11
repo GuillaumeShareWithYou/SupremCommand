@@ -5,7 +5,7 @@ import Engine.App;
 import java.util.stream.Collectors;
 
 public abstract class WebOriented_command extends Command{
-    protected String url_base;
+    protected String url_base = "";
     public WebOriented_command(App app, String command) {
         super(app, command);
     }

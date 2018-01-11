@@ -125,7 +125,7 @@ public class PromptManager implements PropertyChangeListener {
     public void setColor(Color color) {
 
         this.color = color;
-        prompt.setStyle("-fx-text-fill: "+getColor().getColor());
+        prompt.setStyle("-fx-background-color : white; -fx-text-fill: "+getColor().getColor());
     }
 
     public TextArea getPrompt() {

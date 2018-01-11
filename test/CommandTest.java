@@ -1,11 +1,13 @@
 import Engine.App;
-import Engine.commands.Calc_command;
-import Engine.commands.Command;
+import Engine.commands.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,4 +48,21 @@ public class CommandTest {
             System.out.println(m.group());
         }
     }
+
+    @Test
+    public void mysqlCommand(){
+        System.out.println("tralalala");
+        new Mysql_command(new App(),"mysql");
+    }
+    @Test
+    public void hbmailCommand(){
+        new Hbmail_command(new App(),"hbmail");
+    }
+
+    @Test
+    public void testPattern(){
+    Command c = new Command(new App(), "Ecp app --init -dev");
+    assertEquals("Ecp -init -dev app", c.toString());
+    }
+
 }

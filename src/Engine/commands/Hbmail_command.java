@@ -12,8 +12,7 @@ public class Hbmail_command extends WebOriented_command {
     }
 
     @Override
-    protected String argsToString()
-    {
-        return this.url_base;
+    protected String argsToString(){
+           return this.url_base;
     }
 }

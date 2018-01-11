@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Command {
     protected App app;
@@ -23,7 +24,6 @@ public class Command {
         this.command = _command;
         options = new ArrayList<>();
         args = new ArrayList<>();
-      //  this.command = analyseCommand();
 
         analyseCommand(_command);
         //bloc witch take care of global options and stop the process (no inherits constructors possible)
@@ -51,14 +51,14 @@ public class Command {
 
         //remove commandName and think about the possible '/' at beginning
         this.commandName = command.trim().split(" ")[0].replaceFirst("^/","");
-        String commandWithoutName = command.replaceFirst(this.commandName, "").trim();
+     //   String commandWithoutName = command.replaceFirst(this.commandName, "").trim(); // poser probleme avec les \
         this.commandName = String.valueOf(this.commandName.charAt(0)).toUpperCase()
               +  this.commandName.substring(1).toLowerCase();
         /*looking for options in the command
           An option begin with '-' and doesn't contains numbers so i apply a
         positive look backward for '-' before word */
-        Pattern pattern = Pattern.compile("(?<=-)\\b[a-zA-Z]+\\b");
-        Matcher matcher = pattern.matcher(commandWithoutName);
+        Pattern pattern = Pattern.compile("(?<=\\s-{1,2})\\b[a-zA-Z]+\\b");
+        Matcher matcher = pattern.matcher(command);
         while(matcher.find()){
             this.options.add(matcher.group());
         }
@@ -66,13 +66,15 @@ public class Command {
                 looking for args in the command
                 negative look backward for '-' before every word with letters
                 negative look ahead for '-' after symboles and digits,
+
                 to be able to use calculations with calc_command
                 with + - * / ( ) . %
                 So options can't contain digit later but it's ok.
          */
         //
-        pattern = Pattern.compile("(?<!-)\\b[\\w./*+-:?=]+|[\\d+*/()-.%]+(?![a-zA-Z-])");
-        matcher = pattern.matcher(commandWithoutName);
+        pattern = Pattern.compile("(?<!-)\\b[\\w./*+:?=@%\\\\-]+|[\\d+*/()-.%]+(?![a-zA-Z-])");
+        matcher = pattern.matcher(command);
+        matcher.find(); // remove command name
         while(matcher.find()){
             this.args.add(matcher.group());
         }
@@ -176,8 +178,7 @@ public class Command {
 
     @Override
     public String toString() {
-        return Arrays.asList(commandName, optionsToString(), argsToString())
-                .stream()
+        return Stream.of(commandName, optionsToString(), argsToString())
                 .filter(e->e.length()>0)
                 .collect(Collectors.joining(" "));
     }

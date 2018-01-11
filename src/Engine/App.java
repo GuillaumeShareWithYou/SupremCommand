@@ -35,10 +35,10 @@ public class App {
     }
 
     public void initApp() {
-        config = new Config(this);
-        autocompletion = new Autocompletion(this);
-        context = Context.SLEEP;
         listeners = new ArrayList<>();
+        autocompletion = new Autocompletion(this);
+        config = new Config(this);
+        context = Context.SLEEP;
     }
 
     public void work(String command) {
@@ -193,4 +193,8 @@ public class App {
    public void addListener(PropertyChangeListener listener){
         this.listeners.add(listener);
    }
+
+    public List<PropertyChangeListener> getListeners() {
+        return listeners;
+    }
 }
