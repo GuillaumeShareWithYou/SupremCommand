@@ -65,4 +65,9 @@ public class CommandTest {
     assertEquals("Ecp -init -dev app", c.toString());
     }
 
+    @Test
+    public  void testMethodStaticGetCommandName(){
+        String commandName = "show45 -all commands";
+        assertEquals("show45",Command.getCommandName(commandName));
+    }
 }

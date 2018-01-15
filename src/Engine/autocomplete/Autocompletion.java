@@ -5,6 +5,7 @@ import Engine.tools.CycleList;
 import Engine.commands.Command;
 import Engine.db.DatabaseService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,25 +38,24 @@ public class Autocompletion {
         command = new Command(app, text);
 
         if (lastKeyword.length() == 0) {
-
             cycleList = new CycleList();
             previousLastKeyword = lastKeyword;
         } else if (command.getOptions().size() == 0 && command.getArgs().size() == 0) {
             //need to complete name of command
             type = TypeOfWord.NAME;
-            List<String> res = DatabaseService.getAllCommandsBeginWith(app.getContext(),command.getCommandName());
+            List<String> res = DatabaseService.getAllCommandsBeginWith(command.getCommandName());
             cycleList = new CycleList(res);
             previousLastKeyword = cycleList.getCurrent();
             command.removeCommandName();
         } else if (lastKeyword.startsWith("-")) {
             type = TypeOfWord.OPT;
             lastKeyword = lastKeyword.replaceFirst("-+", "");
-            cycleList = new CycleList(DatabaseService.getAllOptionsBeginWith(app.getContext(),command.getCommandName(), lastKeyword));
+            cycleList = new CycleList(DatabaseService.getAllOptionsBeginWith(command.getCommandName(), lastKeyword));
             command.removeOption(lastKeyword);
             previousLastKeyword = cycleList.getCurrent();
         } else {
             type = TypeOfWord.ARG;
-            cycleList = new CycleList(DatabaseService.getAllArgumentsBeginWith(app.getContext(),command.getCommandName(), lastKeyword));
+            cycleList = new CycleList(DatabaseService.getAllArgumentsBeginWith(command.getCommandName(), lastKeyword));
             command.removeArg(lastKeyword);
             previousLastKeyword = cycleList.getCurrent();
         }

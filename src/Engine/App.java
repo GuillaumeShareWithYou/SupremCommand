@@ -29,7 +29,6 @@ public class App {
     private Config config;
     private Autocompletion autocompletion;
     private List<PropertyChangeListener> listeners;
-    private Command m_command;
     public App() {
         initApp();
     }
@@ -51,13 +50,7 @@ public class App {
             makeComment(command);
             return;
         }
-
-        if (this.getContext() == Context.INIT) {
-           connectUser(command);
-        }else{
             workInContext(command);
-        }
-
     }
 
     private void makeComment(String command) {
@@ -79,47 +72,22 @@ public class App {
     }
 
 
-    private void connectUser(String command) {
-      if(command.equals(config.getPassword()))
-      {
-          new Ecp_command(this,"ecp app --init -dev");
-      }else{
-          setMessage("Please try again.");
-      }
-    }
-
-
     public void workInContext(String command) {
-        String commandName = null;
+        String commandName = Command.getCommandName(command);
         try {
-            m_command = new Command(this,command);
-            if(m_command.isStopCommand()) {
-                return;
-            }
-            setMessage(m_command.toString(), false);
-            commandName = m_command.getCommandName();
+            //TODO NOT INSTANCE A COMMAND, JUST USE A FONCTION TO GET COMMAND NAME
+            setMessage(command, false);
 
             if(!DatabaseService.isExistingCommand(commandName))
                 throw new ChangeTerminalException("command not found");
 
-            if (!DatabaseService.isPermitted(commandName,getContext())) {
-                throw new ForbiddenCommandException("You can't use this command now");
-            }
             Class classe = Class.forName("Engine.commands." + commandName + "_command");
             Constructor constructor = classe.getConstructor(Class.forName("Engine.App"), Class.forName("java.lang.String"));
             constructor.newInstance(this, command);
 
-        } catch (ForbiddenCommandException e) {
-            this.setMessage("You can't use the command " + commandName + " at the moment.");
-
         }
         catch (ChangeTerminalException e) {
-            if(getContext().compareTo(Context.STANDARD)>=0)
-            {
                 new Windows_command(this, command);
-            }else{
-                setMessage("You need to init the app first!");
-            }
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -185,9 +153,8 @@ public class App {
         {
             return null;
         }
-        if(next)
-            return autocompletion.getNext();
-        return autocompletion.getPrevious();
+            return next ?  autocompletion.getNext()
+                         : autocompletion.getPrevious();
     }
 
    public void addListener(PropertyChangeListener listener){

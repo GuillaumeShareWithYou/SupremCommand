@@ -1,6 +1,5 @@
 package Engine.db;
 
-import Engine.tools.Context;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -33,12 +32,10 @@ public class DatabaseService {
     }
 
 
-    public static String printAllCommands(Context context) {
+    public static String printAllCommands() {
 
         try {
-            PreparedStatement st = db.prepareStatement("select command_name, description from command natural join context_command natural join context where description IS NOT NULL" +
-                    " and context_id <=(select context_id from context where context_name = ?) order by command_name");
-            st.setString(1,context.getName());
+            PreparedStatement st = db.prepareStatement("select command_name, description from command where description IS NOT NULL");
             ResultSet res = st.executeQuery();
             StringBuilder strb = new StringBuilder();
             strb.append("List of availables commands : \n");
@@ -52,14 +49,13 @@ public class DatabaseService {
         }
 
     }
-    public static List<String> getAllCommandsBeginWith(Context context , String begining)
+    public static List<String> getAllCommandsBeginWith(String begining)
     {
         List<String> commands = new ArrayList<>();
 
         try {
-            PreparedStatement st = db.prepareStatement("select command_name from command natural join context_command natural join context where command_name LIKE ? and context_id <=(select context_id from context where context_name = ?) ");
+            PreparedStatement st = db.prepareStatement("select command_name from command where command_name LIKE ? ");
             st.setString(1,begining+"%");
-            st.setString(2,context.getName());
             ResultSet res = st.executeQuery();
             StringBuilder strb = new StringBuilder();
             while (res.next()) {
@@ -131,42 +127,7 @@ public class DatabaseService {
         }
     }
 
-    public static List<String> getForbiddenCommands(Context context) {
-        try{
 
-            PreparedStatement st = db.prepareStatement("select command_name from command where command_id not in (select command_id from context_command NATURAL join context where context_name=?)");
-            st.setString(1,context.getName());
-            ResultSet res = st.executeQuery();
-            List<String> forbiddenCommands = new ArrayList<>();
-            while(res.next())
-            {
-                forbiddenCommands.add(res.getString("command_name"));
-            }
-            System.out.println(forbiddenCommands);
-            return forbiddenCommands;
-        }catch(SQLException e){
-
-            return null;
-        }
-    }
-
-    public static boolean isPermitted(String commandName, Context context) {
-        try{
-
-            PreparedStatement st = db.prepareStatement(
-                    "select command_id from command NATURAL join context_command natural join context" +
-                            " where command_name=? " +
-                    " and context_id <= (select context_id from context where context_name=?)");
-            st.setString(1,commandName);
-            st.setString(2,context.getName());
-            ResultSet res = st.executeQuery();
-
-            return res.next();
-        }catch(SQLException e){
-        e.printStackTrace();
-            return false;
-        }
-    }
 
     public static String printCommandArguments(String commandName) {
 
@@ -213,30 +174,28 @@ public class DatabaseService {
         return args;
     }
 
-    public static String getOptionBeginWith(Context context,String commandName, String optionName) {
+    public static String getOptionBeginWith(String commandName, String optionName) {
 
         String ret = "";
         try{
 
-            PreparedStatement st = db.prepareStatement("select option_name from options natural join command_options natural join command natural join context_command natural join context where option_name LIKE ? and command_name = ? and context_id <=(select context_id from context where context_name = ?)");
+            PreparedStatement st = db.prepareStatement("select option_name from options natural join command_options natural join command where option_name LIKE ? and command_name = ?");
             st.setString(1,optionName+"%");
             st.setString(2,commandName);
-            st.setString(3,context.getName());
             ResultSet res = st.executeQuery();
             if(res.next())
                ret = res.getString(1);
         }catch (Exception e){}
     return ret;
     }
-    public static List<String> getAllOptionsBeginWith(Context context, String commandName, String optionName) {
+    public static List<String> getAllOptionsBeginWith(String commandName, String optionName) {
 
         List<String> ret = new ArrayList<>();
         try{
 
-            PreparedStatement st = db.prepareStatement("select option_name from options natural join command_options natural join command natural join context_command natural join context where option_name LIKE ? and command_name = ? and context_id <=(select context_id from context where context_name = ?)");
+            PreparedStatement st = db.prepareStatement("select option_name from options natural join command_options natural join command where option_name LIKE ? and command_name = ? ");
             st.setString(1,optionName+"%");
             st.setString(2,commandName);
-            st.setString(3,context.getName());
             ResultSet res = st.executeQuery();
             while(res.next()){
 
@@ -246,13 +205,12 @@ public class DatabaseService {
         return ret;
     }
 
-    public static String getArgumentBeginWith(Context context, String commandName, String argument) {
+    public static String getArgumentBeginWith(String commandName, String argument) {
         String ret = new String();
         try{
-            PreparedStatement st = db.prepareStatement("select argument_name from argument natural join command natural join context_command natural join context where argument_name LIKE ? and command_name = ? and context_id <=(select context_id from context where context_name = ?)");
+            PreparedStatement st = db.prepareStatement("select argument_name from argument natural join command where argument_name LIKE ? and command_name = ? ");
             st.setString(1,argument+"%");
             st.setString(2,commandName);
-            st.setString(3,context.getName());
             ResultSet res = st.executeQuery();
             if(res.next())
               ret = res.getString(1);
@@ -261,13 +219,13 @@ public class DatabaseService {
         }
         return ret;
     }
-    public static List<String> getAllArgumentsBeginWith(Context context, String commandName, String argument) {
+    public static List<String> getAllArgumentsBeginWith( String commandName, String argument) {
         List<String> ret = new ArrayList<>();
         try{
-            PreparedStatement st = db.prepareStatement("select argument_name from argument natural join command natural join context_command natural join context where argument_name LIKE ? and command_name = ? and context_id <=(select context_id from context where context_name = ?)");
+            PreparedStatement st = db.prepareStatement("select argument_name from argument natural join command where argument_name LIKE ? and command_name = ? ");
             st.setString(1,argument+"%");
             st.setString(2,commandName);
-            st.setString(3,context.getName());
+
             ResultSet res = st.executeQuery();
             while(res.next()){
                 ret.add(res.getString(1));

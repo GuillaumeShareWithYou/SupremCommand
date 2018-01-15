@@ -4,7 +4,6 @@ import Engine.App;
 import Engine.db.DatabaseService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,22 +46,36 @@ public class Command {
             stopCommand();
         }
     }
-    protected void analyseCommand(String command){
 
-        //remove commandName and think about the possible '/' at beginning
-        this.commandName = command.trim().split(" ")[0].replaceFirst("^/","");
-     //   String commandWithoutName = command.replaceFirst(this.commandName, "").trim(); // poser probleme avec les \
-        this.commandName = String.valueOf(this.commandName.charAt(0)).toUpperCase()
-              +  this.commandName.substring(1).toLowerCase();
+    public static String getCommandName(String command){
+        String commandName =  command.trim().split(" ")[0].replaceFirst("^/","");
+       return String.valueOf(commandName.charAt(0)).toUpperCase()
+                + commandName.substring(1).toLowerCase();
+    }
+
+
+    public static List<String> getOptions(String command){
         /*looking for options in the command
           An option begin with '-' and doesn't contains numbers so i apply a
         positive look backward for '-' before word */
+        List<String> options = new ArrayList<>();
         Pattern pattern = Pattern.compile("(?<=\\s-{1,2})\\b[a-zA-Z]+\\b");
         Matcher matcher = pattern.matcher(command);
         while(matcher.find()){
-            this.options.add(matcher.group());
+            options.add(matcher.group());
         }
-        /*
+        return options;
+    }
+    protected void analyseCommand(String command){
+
+        this.commandName = getCommandName(command);
+        this.options = getOptions(command);
+        this.args = getArguments(command);
+    }
+
+    public static List<String> getArguments(String command) {
+        List<String> args = new ArrayList<>();
+          /*
                 looking for args in the command
                 negative look backward for '-' before every word with letters
                 negative look ahead for '-' after symboles and digits,
@@ -72,12 +85,13 @@ public class Command {
                 So options can't contain digit later but it's ok.
          */
         //
-        pattern = Pattern.compile("(?<!-)\\b[\\w./*+:?=@%\\\\-]+|[\\d+*/()-.%]+(?![a-zA-Z-])");
-        matcher = pattern.matcher(command);
+        Pattern pattern = Pattern.compile("(?<!-)\\b[\\w./*+:?=@%\\\\-]+|[\\d+*/()-.%]+(?![a-zA-Z-])");
+        Matcher matcher = pattern.matcher(command);
         matcher.find(); // remove command name
         while(matcher.find()){
-            this.args.add(matcher.group());
+            args.add(matcher.group());
         }
+        return args;
     }
 
 

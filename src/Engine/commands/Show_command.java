@@ -14,7 +14,7 @@ public class Show_command extends Command{
         }
         if(this.getArgs().contains("cmd"))
         {
-            app.setMessage(DatabaseService.printAllCommands(app.getContext()));
+            app.setMessage(DatabaseService.printAllCommands());
         }
     }
 
