@@ -19,6 +19,5 @@
     -fx-background-radius: 0;
     -fx-background-insets: 0, 0.3 0 0 0 ;
     -fx-background-color: gray, black!important;
-
     -fx-prompt-text-fill: blue!important;
 }

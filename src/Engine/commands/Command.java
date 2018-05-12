@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Command {
+public abstract class Command {
     protected App app;
     protected String commandName;
     protected String command;

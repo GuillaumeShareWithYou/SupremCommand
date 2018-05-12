@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Autocompletion {
     private App app;
-    private Command command;
+    private String commandName;
+    private List<String> options;
+    private List<String> args;
     private CycleList cycleList;
     private String lastKeyword;
     private String previousLastKeyword;
@@ -22,6 +26,8 @@ public class Autocompletion {
         this.app = app;
         lastKeyword = new String();
         previousLastKeyword = new String();
+        options = new ArrayList<>();
+        args = new ArrayList<>();
     }
 
     public void seek(String text)  {
@@ -35,35 +41,40 @@ public class Autocompletion {
             previousLastKeyword = cycleList.getCurrent();
             return;
         }
-        command = new Command(app, text);
+        commandName = Command.getCommandName(text);
+        options = Command.getOptions(text);
+        args = Command.getArguments(text);
 
         if (lastKeyword.length() == 0) {
             cycleList = new CycleList();
             previousLastKeyword = lastKeyword;
-        } else if (command.getOptions().size() == 0 && command.getArgs().size() == 0) {
+        } else if (options.size() == 0 && args.size() == 0) {
             //need to complete name of command
             type = TypeOfWord.NAME;
-            List<String> res = DatabaseService.getAllCommandsBeginWith(command.getCommandName());
+            List<String> res = DatabaseService.getAllCommandsBeginWith(commandName);
             cycleList = new CycleList(res);
             previousLastKeyword = cycleList.getCurrent();
-            command.removeCommandName();
+            //Remove command name
+            commandName = "";
         } else if (lastKeyword.startsWith("-")) {
             type = TypeOfWord.OPT;
             lastKeyword = lastKeyword.replaceFirst("-+", "");
-            cycleList = new CycleList(DatabaseService.getAllOptionsBeginWith(command.getCommandName(), lastKeyword));
-            command.removeOption(lastKeyword);
+            cycleList = new CycleList(DatabaseService.getAllOptionsBeginWith(commandName, lastKeyword));
+            //Remove option
+            options.remove(lastKeyword);
             previousLastKeyword = cycleList.getCurrent();
         } else {
             type = TypeOfWord.ARG;
-            cycleList = new CycleList(DatabaseService.getAllArgumentsBeginWith(command.getCommandName(), lastKeyword));
-            command.removeArg(lastKeyword);
+            cycleList = new CycleList(DatabaseService.getAllArgumentsBeginWith(commandName, lastKeyword));
+            //Remove argument
+            args.remove(lastKeyword);
             previousLastKeyword = cycleList.getCurrent();
         }
     }
 
     public String getNext()
     {
-        StringBuilder str =  new StringBuilder(command.toString());
+        StringBuilder str =  new StringBuilder(getCommandString());
         if(type!=TypeOfWord.NAME)
             str.append(" ");
         if(type==TypeOfWord.OPT)
@@ -78,27 +89,31 @@ public class Autocompletion {
     }
     public String getPrevious()
     {
-        StringBuilder str =  new StringBuilder(command.toString());
+        StringBuilder str =  new StringBuilder(getCommandString());
         if(type==TypeOfWord.OPT)
             str.append("-");
         str.append(cycleList.getPrevious());
         return str.toString();
     }
 
+    public String getCommandString(){
+
+         return Stream.of(commandName, optionsToString(), argsToString())
+                .filter(e->e.length()>0)
+                .collect(Collectors.joining(" "));
+    }
+    private String optionsToString() {
+        return options.stream().map(s->"-"+s).collect(Collectors.joining(" "));
+    }
+    private String argsToString() {
+        return args.stream().collect(Collectors.joining(" "));
+    }
     public App getApp() {
         return app;
     }
 
     public void setApp(App app) {
         this.app = app;
-    }
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public void setCommand(Command command) {
-        this.command = command;
     }
 
     public CycleList getCycleList() {

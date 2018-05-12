@@ -1,8 +1,6 @@
 package Engine;
 
 
-
-
 import Engine.autocomplete.Autocompletion;
 import Engine.autocomplete.Emmet;
 import Engine.commands.Command;
@@ -75,7 +73,6 @@ public class App {
     public void workInContext(String command) {
         String commandName = Command.getCommandName(command);
         try {
-            //TODO NOT INSTANCE A COMMAND, JUST USE A FONCTION TO GET COMMAND NAME
             setMessage(command, false);
 
             if(!DatabaseService.isExistingCommand(commandName))

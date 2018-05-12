@@ -2,6 +2,7 @@ package sample;
 
 import Engine.App;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +26,9 @@ public class View extends Application {
         prompt = (TextArea) root.getScene().lookup("#prompt");
         input =  (TextField) root.getScene().lookup("#input");
 
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view.fxml"));
+        MenuController menuController = loader.getController();
 
         App app = new App();
         new Controller(this,app);
@@ -35,6 +39,7 @@ public class View extends Application {
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
     }
+
 
     public TextArea getPrompt() {
         return prompt;

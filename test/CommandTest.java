@@ -32,12 +32,6 @@ public class CommandTest {
         System.out.println(Arrays.toString(splited));
     }
 
-    @Test
-    public void getArgs(){
-        String command = "name foo bar lala -3 -oh:c -oh1";
-        Command cmd = new Command(new App(), command);
-        System.out.println(cmd);
-    }
 
     @Test
     public void testPositiveLookAhead(){
@@ -59,11 +53,7 @@ public class CommandTest {
         new Hbmail_command(new App(),"hbmail");
     }
 
-    @Test
-    public void testPattern(){
-    Command c = new Command(new App(), "Ecp app --init -dev");
-    assertEquals("Ecp -init -dev app", c.toString());
-    }
+
 
     @Test
     public  void testMethodStaticGetCommandName(){

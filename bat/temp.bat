@@ -1,3 +1,1 @@
-git add * 
- git commit -m "Suppression des context ajout des methodes static dans Command" 
- git push origin master
+C:\wamp64\bin\mysql\mysql5.7.19\bin\mysql.exe -u root
